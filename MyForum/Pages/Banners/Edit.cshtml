@@ -1,0 +1,21 @@
+﻿@page "{bannerId:int?}"
+
+@model MyForum.Pages.Banners.EditModel
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Editing @Model.Banner.Name</h2>
+
+<form method="post">
+    <input type="hidden" asp-for="Banner.Id" />
+
+    <div class="form-group">
+        <label asp-for="Banner.Name"></label>
+        <input asp-for="Banner.Name" class="form-control" />
+        <span class="text-danger" asp-validation-for="Banner.Name"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Save</button>
+    <a asp-page=".\List" class="btn btn-danger">Abort changes</a>
+</form>
