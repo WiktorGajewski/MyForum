@@ -1,0 +1,25 @@
+﻿@page "{guildId:int?}"
+
+@model MyForum.Pages.Guilds.EditModel
+@{
+
+}
+
+<h2>@ViewData["Title"] @Model.Guild.Name</h2>
+
+<form method="post">
+    <input type="hidden" asp-for="Guild.Id" />
+
+    <div class="form-group">
+        <label asp-for="Guild.Name"></label>
+        <input asp-for="Guild.Name" class="form-control" />
+        <span class="text-danger" asp-validation-for="Guild.Name"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Save</button>
+    <a asp-page="Index" class="btn btn-danger">Abort changes</a>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -22,8 +22,4 @@
     <ProjectReference Include="..\MyForum.Data\MyForum.Data.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ViewComponents\" />
-  </ItemGroup>
-
 </Project>
