@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MyForum.Core;
-using MyForum.Data;
+using MyForum.Data.Interfaces;
 
 namespace MyForum.Pages.Guilds
 {
@@ -19,10 +19,12 @@ namespace MyForum.Pages.Guilds
         public IActionResult OnGet(int guildId)
         {
             Guild = guildData.GetById(guildId);
+
             if(Guild == null)
             {
                 return RedirectToPage("./NotFound");
             }
+
             return Page();
         }
 
