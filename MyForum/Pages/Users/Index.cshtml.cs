@@ -13,7 +13,7 @@ namespace MyForum.Pages.Users
         [TempData]
         public string Message { get; set; }
 
-        public IEnumerable<User> Users { get; set; }
+        public IEnumerable<MyUser> MyUsers { get; set; }
 
         public IndexModel(IUserData userData)
         {
@@ -22,7 +22,7 @@ namespace MyForum.Pages.Users
 
         public void OnGet()
         {
-            Users = userData.GetByNickname(null);
+            MyUsers = userData.GetByUsername(null);
         }
     }
 }

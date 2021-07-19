@@ -16,18 +16,18 @@ namespace MyForum.Pages.Users
         [TempData]
         public string Message { get; set; }
 
-        public new User User { get; set; }
+        public MyUser MyUser { get; set; }
 
         public DetailsModel(IUserData userData)
         {
             this.userData = userData;
         }
 
-        public IActionResult OnGet(int userId)
+        public IActionResult OnGet(string userId)
         {
-            User = userData.GetById(userId);
+            MyUser = userData.GetById(userId);
 
-            if(User == null)
+            if(MyUser == null)
             {
                 return RedirectToPage("./NotFound");
             }
