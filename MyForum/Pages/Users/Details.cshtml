@@ -1,4 +1,4 @@
-﻿@page "{userId:int}"
+﻿@page "{userId}"
 @model MyForum.Pages.Users.DetailsModel
 @{
     ViewData["Title"] = "Details";
@@ -9,11 +9,11 @@
     <div class="alet alert-info">@Model.Message</div>
 }
 
-<h2>@Model.User.Nickname</h2>
+<h2>@Model.MyUser.UserName</h2>
 
-<p>Registration date: @Model.User.RegistrationDate</p>
+<p>Registration date: @Model.MyUser.RegistrationDate</p>
 
-<p>Prestige points: @Model.User.PrestigePoints</p>
+<p>Prestige points: @Model.MyUser.PrestigePoints</p>
 
 <br />
 <a asp-page="Index" class="btn btn-outline-secondary"> Return to the list of users</a>

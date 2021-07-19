@@ -16,7 +16,7 @@ namespace MyForum.Data.Services
             this.db = db;
         }
 
-        public User Add(User newUser)
+        public MyUser Add(MyUser newUser)
         {
             db.Users.Add(newUser);
             return newUser;
@@ -27,7 +27,7 @@ namespace MyForum.Data.Services
             return db.SaveChanges();
         }
 
-        public User Delete(int id)
+        public MyUser Delete(string id)
         {
             var user = GetById(id);
             if(user != null)
@@ -37,21 +37,21 @@ namespace MyForum.Data.Services
             return user;
         }
 
-        public User GetById(int id)
+        public MyUser GetById(string id)
         {
             return db.Users.Find(id);
         }
 
-        public IEnumerable<User> GetByNickname(string nickname)
+        public IEnumerable<MyUser> GetByUsername(string username)
         {
             var query = from u in db.Users
-                        where nickname == null || u.Nickname.StartsWith(nickname)
+                        where username == null || u.UserName.StartsWith(username)
                         orderby u.PrestigePoints
                         select u;
             return query;
         }
 
-        public User Update(User updatedUser)
+        public MyUser Update(MyUser updatedUser)
         {
             var entity = db.Users.Attach(updatedUser);
             entity.State = EntityState.Modified;

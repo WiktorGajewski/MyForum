@@ -12,22 +12,16 @@
 }
 
 <table class="table">
-    @foreach (var user in Model.Users)
+    @foreach (var user in Model.MyUsers)
     {
     <tr>
-        <td>@user.Nickname</td>
+        <td>@user.UserName</td>
         <td>@user.PrestigePoints</td>
         <td class="text-justify">
             <a class="text-primary navbar-te"
                asp-page="./Details"
                asp-route-userId="@user.Id">
                 Details
-            </a>
-            |
-            <a class="text-primary navbar-text"
-               asp-page="./Edit"
-               asp-route-userId="@user.Id">
-                Edit
             </a>
             |
             <a class="text-primary navbar-text"
@@ -39,5 +33,3 @@
     </tr>
     }
 </table>
-
-<a asp-page=".\Edit" class="btn btn-primary">Add new</a>
