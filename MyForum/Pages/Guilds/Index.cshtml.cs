@@ -3,9 +3,11 @@ using MyForum.Core;
 using MyForum.Data.Interfaces;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MyForum.Pages.Guilds
 {
+    [Authorize(Policy = "2YearsOfService")]
     public class IndexModel : PageModel
     {
         private readonly IGuildData guildData;
