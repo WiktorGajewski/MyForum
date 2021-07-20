@@ -9,5 +9,6 @@ namespace MyForum.Data.Interfaces
         MyUser GetById(string id);
         MyUser Delete(string id);
         int Commit();
+        MyUser SetUpNewRank(string id, Rank rank);
     }
 }

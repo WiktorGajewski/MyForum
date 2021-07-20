@@ -1,0 +1,54 @@
+﻿@page "{userId}"
+@model MyForum.Pages.Users.ManageRankModel
+@{
+    ViewData["Title"] = "Manage Rank";
+}
+
+<table class="table table-bordered">
+    <thead class="thead-dark">
+        <tr>
+            <th>@Html.DisplayNameFor(u => u.MyUser.UserName)</th>
+            <th>@Html.DisplayNameFor(u => u.MyUser.Rank)</th>
+            <th>@Html.DisplayNameFor(u => u.MyUser.PrestigePoints)</th>
+            <th>@Html.DisplayNameFor(u => u.MyUser.RegistrationDate)</th>
+            <th>Days of service</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>@Html.DisplayFor(u => u.MyUser.UserName)</td>
+            <td>@Html.DisplayFor(u => u.MyUser.Rank)</td>
+            <td>@Html.DisplayFor(u => u.MyUser.PrestigePoints)</td>
+            <td>@Model.MyUser.RegistrationDate.ToShortDateString()</td>
+            <td>@Model.DaysOfService</td>
+        </tr>
+    </tbody>
+</table>
+
+<br />
+<form method="post">
+
+    <input type="hidden" asp-for="MyUser.Id" />
+    <input type="hidden" asp-for="MyUser.UserName" />
+    <input type="hidden" asp-for="MyUser.Rank" />
+
+    @if (Model.UserRank == Model.MaxPossibleRank)
+    {
+        <button type="submit" asp-page-handler="RankUp" class="btn btn-success disabled" disabled="disabled">Rank up</button>
+    }
+    else
+    {
+        <button type="submit" asp-page-handler="RankUp" class="btn btn-success">Rank up</button>
+    }
+
+    @if (Model.UserRank == Model.MinPossibleRank)
+    {
+        <button type="submit" asp-page-handler="RankDown" class="btn btn-danger disabled" disabled="disabled">Rank down</button>
+    }
+    else
+    {
+        <button type="submit" asp-page-handler="RankDown" class="btn btn-danger">Rank down</button>
+    }
+</form>
+<br />
+<a asp-page="Index" class="btn btn-outline-secondary"> Return to the list of users</a>

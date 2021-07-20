@@ -44,5 +44,12 @@ namespace MyForum.Data.Services
                         select u;
             return query;
         }
+
+        public MyUser SetUpNewRank(string id, Rank rank)
+        {
+            var user = GetById(id);
+            user.Rank = rank;
+            return user;
+        }
     }
 }

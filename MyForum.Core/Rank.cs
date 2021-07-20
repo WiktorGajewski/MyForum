@@ -3,8 +3,8 @@ namespace MyForum.Core
 {
     public enum Rank
     {
-        Novice,
-        Guildmaster,
-        Leader
+        Novice = 0,
+        Guildmaster = 1,
+        Leader = 2
     }
 }
