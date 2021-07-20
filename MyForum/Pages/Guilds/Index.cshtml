@@ -1,7 +1,13 @@
 ﻿@page
 @model MyForum.Pages.Guilds.IndexModel
+
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+
 @{
     ViewData["Title"] = "Guilds";
+
+    var isLeaderAuthorizationResult = await AuthorizationService.AuthorizeAsync(User, "IsLeader");
 }
 
 <h1>Guilds</h1>
@@ -12,7 +18,7 @@
             <input type="search" class="form-control"
                    asp-for="SearchTerm" />
             <span class="input-group-btn">
-                <button class="btn btn-primary" type="submit" >
+                <button class="btn btn-primary" type="submit">
                     <i>Filter</i>
                 </button>
             </span>
@@ -36,21 +42,31 @@
                    asp-route-guildId="@guild.Id">
                     Details
                 </a>
-                |
-                <a class="text-primary navbar-text"
-                   asp-page="./Edit"
-                   asp-route-guildId="@guild.Id">
-                    Edit
-                </a>
-                |
-                <a class="text-primary navbar-text"
-                   asp-page="./Delete"
-                   asp-route-guildId="@guild.Id">
-                    Delete
-                </a>
+
+                @if (isLeaderAuthorizationResult.Succeeded)
+                {
+                    <text>
+                        |
+                        <a class="text-primary navbar-text"
+                           asp-page="./Edit"
+                           asp-route-guildId="@guild.Id">
+                            Edit
+                        </a>
+                        |
+                        <a class="text-primary navbar-text"
+                           asp-page="./Delete"
+                           asp-route-guildId="@guild.Id">
+                            Delete
+                        </a>
+                    </text>
+                }
             </td>
         </tr>
     }
 </table>
 
-<a asp-page=".\Edit" class="btn btn-primary">Add new</a>
+@if (isLeaderAuthorizationResult.Succeeded)
+{
+    <a asp-page=".\Edit" class="btn btn-primary">Add new</a>
+}
+    

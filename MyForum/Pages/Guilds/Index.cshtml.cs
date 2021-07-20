@@ -3,6 +3,7 @@ using MyForum.Core;
 using MyForum.Data.Interfaces;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MyForum.Pages.Guilds
 {
