@@ -16,12 +16,6 @@ namespace MyForum.Data.Services
             this.db = db;
         }
 
-        public MyUser Add(MyUser newUser)
-        {
-            db.Users.Add(newUser);
-            return newUser;
-        }
-
         public int Commit()
         {
             return db.SaveChanges();
@@ -49,13 +43,6 @@ namespace MyForum.Data.Services
                         orderby u.PrestigePoints
                         select u;
             return query;
-        }
-
-        public MyUser Update(MyUser updatedUser)
-        {
-            var entity = db.Users.Attach(updatedUser);
-            entity.State = EntityState.Modified;
-            return updatedUser;
         }
     }
 }

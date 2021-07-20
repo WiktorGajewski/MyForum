@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MyForum.Core;
@@ -5,6 +6,7 @@ using MyForum.Data.Interfaces;
 
 namespace MyForum.Pages.Guilds
 {
+    [Authorize(Policy = "IsLeader")]
     public class DeleteModel : PageModel
     {
         private readonly IGuildData guildData;

@@ -7,8 +7,6 @@ namespace MyForum.Data.Interfaces
     {
         IEnumerable<MyUser> GetByUsername(string nickname);
         MyUser GetById(string id);
-        MyUser Update(MyUser updatedUser);
-        MyUser Add(MyUser newUser);
         MyUser Delete(string id);
         int Commit();
     }

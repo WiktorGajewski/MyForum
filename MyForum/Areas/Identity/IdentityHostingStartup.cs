@@ -1,9 +1,8 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MyForum.Core;
 using MyForum.Data;
@@ -22,12 +21,20 @@ namespace MyForum.Areas.Identity
                     options.SignIn.RequireConfirmedAccount = false;
                     options.Password.RequireNonAlphanumeric = false;
                 })
+                    .AddRoles<IdentityRole>()
+                    .AddRoleManager<RoleManager<IdentityRole>>()
                     .AddUserManager<UserManager<MyUser>>()
-                    .AddEntityFrameworkStores<MyForumDbContext>();
+                    .AddEntityFrameworkStores<MyForumDbContext>()
+                    .AddDefaultTokenProviders();
                     //.AddDefaultUI();
-                    //.AddDefaultTokenProviders();
 
                 services.AddScoped<IUserClaimsPrincipalFactory<MyUser>, ApplicationUserClaimsPrincipalFactory>();
+
+                services.ConfigureApplicationCookie(options => {
+                    options.AccessDeniedPath = new PathString("/Identity/Account/AccessDenied");
+                    options.LoginPath = new PathString("/Identity/Account/Login");
+                    options.LogoutPath = new PathString("/Identity/Account/Logout");
+                });
             });
         }
     }

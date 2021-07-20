@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using MyForum.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -28,6 +25,8 @@ namespace MyForum.Areas.Identity
                 user.RegistrationDate.ToShortDateString()));
             identity.AddClaim(new Claim("PrestigePoints",
                 user.PrestigePoints.ToString()));
+            identity.AddClaim(new Claim("Rank",
+                user.Rank.ToString()));
 
             return identity;
         }

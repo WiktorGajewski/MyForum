@@ -8,5 +8,6 @@ namespace MyForum.Core
     {
         public DateTime RegistrationDate { get; set; }
         public int PrestigePoints { get; set; }
+        public Rank Rank { get; set; }
     }
 }
