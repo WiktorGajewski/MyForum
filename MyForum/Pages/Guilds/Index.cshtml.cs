@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace MyForum.Pages.Guilds
 {
-    [Authorize(Policy = "2YearsOfService")]
     public class IndexModel : PageModel
     {
         private readonly IGuildData guildData;

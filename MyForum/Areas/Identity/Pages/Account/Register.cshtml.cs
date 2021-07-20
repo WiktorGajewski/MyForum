@@ -10,7 +10,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using MyForum.Areas.Identity.reCaptcha;
 using MyForum.Core;
 
 namespace MyForum.Areas.Identity.Pages.Account
@@ -21,21 +23,28 @@ namespace MyForum.Areas.Identity.Pages.Account
         private readonly SignInManager<MyUser> _signInManager;
         private readonly UserManager<MyUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
+        private readonly IConfiguration _config;
+        private readonly GoogleRecaptchaResult reCaptchaResult;
 
         public RegisterModel(
             UserManager<MyUser> userManager,
             SignInManager<MyUser> signInManager,
-            ILogger<RegisterModel> logger)
+            ILogger<RegisterModel> logger,
+            IConfiguration config)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _config = config;
+            reCaptchaResult = new GoogleRecaptchaResult();
         }
 
         [BindProperty]
         public InputModel Input { get; set; }
 
         public string ReturnUrl { get; set; }
+
+        public string googleReCaptchaKey { get; set; }
 
         public class InputModel
         {
@@ -56,7 +65,11 @@ namespace MyForum.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
         }
 
-        public void OnGetAsync(string returnUrl = null) => ReturnUrl = returnUrl;
+        public void OnGetAsync(string returnUrl = null)
+        {
+            ReturnUrl = returnUrl;
+            googleReCaptchaKey = _config["GoogleReCaptcha:key"];
+        }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
@@ -71,6 +84,17 @@ namespace MyForum.Areas.Identity.Pages.Account
                     PrestigePoints = 0,
                     Rank = Rank.Novice
                 };
+
+                string EncodedResponse = Request.Form["g-Recaptcha-Response"];
+                string secret = _config["GoogleReCaptcha:secret"];
+                bool isCaptchaValid = (reCaptchaResult.Validate(EncodedResponse, secret) == "true" ? true : false);
+
+                if (!isCaptchaValid)    //Captcha check
+                {
+                    ModelState.AddModelError(string.Empty, "You failed the CAPTCHA");
+                    googleReCaptchaKey = _config["GoogleReCaptcha:key"];
+                    return Page();
+                }
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
@@ -89,6 +113,7 @@ namespace MyForum.Areas.Identity.Pages.Account
             }
 
             // If we got this far, something failed, redisplay form
+            googleReCaptchaKey = _config["GoogleReCaptcha:key"];
             return Page();
         }
     }
