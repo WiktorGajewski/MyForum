@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
-using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
 namespace MyForum.Core
 {
@@ -9,5 +9,6 @@ namespace MyForum.Core
         public DateTime RegistrationDate { get; set; }
         public int PrestigePoints { get; set; }
         public Rank Rank { get; set; }
+        public IList<ChatMessage> ChatMessages { get; set; }
     }
 }

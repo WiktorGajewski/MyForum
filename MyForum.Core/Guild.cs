@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace MyForum.Core
 {
@@ -8,5 +9,7 @@ namespace MyForum.Core
 
         [Required, StringLength(80)]
         public string Name { get; set; }
+
+        public IList<ChatMessage> ForumChatMessages { get; set; }
     }  
 }

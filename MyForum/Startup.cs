@@ -34,6 +34,7 @@ namespace MyForum
 
             services.AddScoped<IGuildData, GuildData>();
             services.AddScoped<IUserData, UserData>();
+            services.AddScoped<IMessageData, MessageData>();
 
             services.AddRazorPages();
             //services.AddControllers();
