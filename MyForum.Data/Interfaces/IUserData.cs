@@ -5,9 +5,9 @@ namespace MyForum.Data.Interfaces
 {
     public interface IUserData
     {
-        IEnumerable<MyUser> GetByUsername(string nickname);
+        IEnumerable<MyUser> GetByUsername(string username);
         IEnumerable<MyUser> GetByUsername(string username, int usersToTake, int usersToSkip);
-        int CountUsers();
+        int CountUsers(string name = null);
         MyUser GetById(string id);
         MyUser Delete(string id);
         int Commit();

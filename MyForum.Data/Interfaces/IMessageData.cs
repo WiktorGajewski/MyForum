@@ -7,10 +7,10 @@ namespace MyForum.Data.Interfaces
     public interface IMessageData
     {
         IEnumerable<ChatMessage> GetByGuildId(int? guildId);
+        IEnumerable<ChatMessage> GetByGuildId(int? guildId, int batchSize, int skip);
         IEnumerable<ChatMessage> GetByUserId(string userId);
         ChatMessage GetById(int messageId);
-        ChatMessage AddNewMessage(ChatMessage message);
-        IEnumerable<ChatMessage> GetLast10(int? guildId, int skip);
+        ChatMessage Add(ChatMessage message);
         int Commit();
     }
 }

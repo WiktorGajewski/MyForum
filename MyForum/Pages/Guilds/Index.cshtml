@@ -42,37 +42,45 @@
 }
 
 <table class="table">
-    @foreach (var guild in Model.Guilds)
-    {
+    <thead>
         <tr>
-            <td>@guild.Name</td>
-            <td class="text-justify">
-                <a class="text-primary navbar-te"
-                   asp-page="./Details"
-                   asp-route-guildId="@guild.Id">
-                    Details
-                </a>
-
-                @if (isLeaderAuthorizationResult.Succeeded)
-                {
-                    <text>
-                        |
-                        <a class="text-primary navbar-text"
-                           asp-page="./Edit"
-                           asp-route-guildId="@guild.Id">
-                            Edit
-                        </a>
-                        |
-                        <a class="text-primary navbar-text"
-                           asp-page="./Delete"
-                           asp-route-guildId="@guild.Id">
-                            Delete
-                        </a>
-                    </text>
-                }
-            </td>
+            <th>Name</th>
+            <th></th>
         </tr>
-    }
+    </thead>
+    <tbody>
+        @foreach (var guild in Model.Guilds)
+        {
+            <tr>
+                <td>@guild.Name</td>
+                <td class="text-justify">
+                    <a class="text-primary navbar-te"
+                       asp-page="./Details"
+                       asp-route-guildId="@guild.Id">
+                        Details
+                    </a>
+
+                    @if (isLeaderAuthorizationResult.Succeeded)
+                    {
+                        <text>
+                            |
+                            <a class="text-primary navbar-text"
+                               asp-page="./Edit"
+                               asp-route-guildId="@guild.Id">
+                                Edit
+                            </a>
+                            |
+                            <a class="text-primary navbar-text"
+                               asp-page="./Delete"
+                               asp-route-guildId="@guild.Id">
+                                Delete
+                            </a>
+                        </text>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
 </table>
 
 <br />

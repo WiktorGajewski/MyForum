@@ -38,10 +38,11 @@ namespace MyForum.Data.Services
 
         public IEnumerable<MyUser> GetByUsername(string username)
         {
-            var query = from u in db.Users
-                        where username == null || u.UserName.StartsWith(username)
-                        orderby u.PrestigePoints
-                        select u;
+            var query = db.Users
+                .Where(u => username == null || u.UserName.StartsWith(username))
+                .OrderBy(u => u.PrestigePoints)
+                .ToList();
+
             return query;
         }
 
@@ -57,9 +58,11 @@ namespace MyForum.Data.Services
             return query;
         }
 
-        public int CountUsers()
+        public int CountUsers(string name = null)
         {
-            return db.Users.Count();
+            return db.Users
+                .Where(u => name == null || u.UserName.StartsWith(name))
+                .Count();
         }
 
         public MyUser SetUpNewRank(string id, Rank rank)

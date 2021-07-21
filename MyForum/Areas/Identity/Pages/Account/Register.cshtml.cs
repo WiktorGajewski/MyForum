@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MyForum.Areas.Identity.reCaptcha;
@@ -44,7 +39,7 @@ namespace MyForum.Areas.Identity.Pages.Account
 
         public string ReturnUrl { get; set; }
 
-        public string googleReCaptchaKey { get; set; }
+        public string GoogleReCaptchaKey { get; set; }
 
         public class InputModel
         {
@@ -68,7 +63,7 @@ namespace MyForum.Areas.Identity.Pages.Account
         public void OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
-            googleReCaptchaKey = _config["GoogleReCaptcha:key"];
+            GoogleReCaptchaKey = _config["GoogleReCaptcha:key"];
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
@@ -92,7 +87,7 @@ namespace MyForum.Areas.Identity.Pages.Account
                 if (!isCaptchaValid)    //Captcha check
                 {
                     ModelState.AddModelError(string.Empty, "You failed the CAPTCHA");
-                    googleReCaptchaKey = _config["GoogleReCaptcha:key"];
+                    GoogleReCaptchaKey = _config["GoogleReCaptcha:key"];
                     return Page();
                 }
 
@@ -113,7 +108,7 @@ namespace MyForum.Areas.Identity.Pages.Account
             }
 
             // If we got this far, something failed, redisplay form
-            googleReCaptchaKey = _config["GoogleReCaptcha:key"];
+            GoogleReCaptchaKey = _config["GoogleReCaptcha:key"];
             return Page();
         }
     }

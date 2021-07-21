@@ -18,7 +18,7 @@ namespace MyForum.Data.Services
             this.db = db;
         }
 
-        public ChatMessage AddNewMessage(ChatMessage newMessage)
+        public ChatMessage Add(ChatMessage newMessage)
         {
             db.Add(newMessage);
             return newMessage;
@@ -34,40 +34,40 @@ namespace MyForum.Data.Services
             return db.Messages.Find(messageId);
         }
 
-        public IEnumerable<ChatMessage> GetByGuildId(int? guildId) // guildId == null <- Main Forum
-        {
-            var list = db.Messages
-                .Where(m => m.GuildId == guildId)
-                .Include(m => m.FromUser)           //with authors
-                .OrderBy(m => m.Time)
-                .ToList();
-
-            return list;
-        }
-
         public IEnumerable<ChatMessage> GetByUserId(string userId)
         {
-            var list = db.Messages
+            var query = db.Messages
                 .Where(m => m.FromUserId == userId)
                 .Include(m => m.GuildForum)         //with data about which forum it was
                 .OrderBy(m => m.Time)
                 .ToList();
 
-            return list;
+            return query;
         }
 
-        public IEnumerable<ChatMessage> GetLast10(int? guildId, int skip = 0)
+        public IEnumerable<ChatMessage> GetByGuildId(int? guildId) // guildId == null <- Main Forum
         {
-            var list = db.Messages
+            var query = db.Messages
                 .Where(m => m.GuildId == guildId)
-                .OrderByDescending(m => m.Time)
-                .Include(m => m.FromUser)
-                .Skip(10*skip)
-                .Take(10)
+                .Include(m => m.FromUser)           //with authors
                 .OrderBy(m => m.Time)
                 .ToList();
 
-            return list;
+            return query;
+        }
+        
+        public IEnumerable<ChatMessage> GetByGuildId(int? guildId, int batchSize, int skip)
+        {
+            var query = db.Messages
+                .Where(m => m.GuildId == guildId)
+                .OrderByDescending(m => m.Time)
+                .Include(m => m.FromUser)
+                .Skip(skip)
+                .Take(batchSize)
+                .OrderBy(m => m.Time)
+                .ToList();
+
+            return query;
         }
     }
 }

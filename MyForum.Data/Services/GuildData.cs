@@ -43,10 +43,11 @@ namespace MyForum.Data.Services
 
         public IEnumerable<Guild> GetByName(string name)
         {
-            var query = from b in db.Guilds
-                        where string.IsNullOrEmpty(name) || b.Name.StartsWith(name)
-                        orderby b.Name
-                        select b;
+            var query = db.Guilds
+                .Where(g => name == null || g.Name.StartsWith(name))
+                .OrderBy(g => g.Name)
+                .ToList();
+
             return query;
         }
 
@@ -62,9 +63,11 @@ namespace MyForum.Data.Services
             return query;
         }
 
-        public int CountGuilds()
+        public int CountGuilds(string name = null)
         {
-            return db.Guilds.Count();
+            return db.Guilds
+                .Where(g => name == null || g.Name.StartsWith(name))
+                .Count();
         }
 
         public Guild Update(Guild updatedGuild)

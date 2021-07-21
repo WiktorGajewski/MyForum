@@ -21,18 +21,21 @@ namespace MyForum.Pages.Users
 
         public IEnumerable<MyUser> MyUsers { get; set; }
 
+        [BindProperty(SupportsGet = true)]
+        public string SearchTerm { get; set; }
+
         public int BatchSize => batchSize;
 
         public IndexModel(IUserData userData)
         {
             this.userData = userData;
-            UsersCount = userData.CountUsers();
         }
 
         public void OnGet(int PageNumber)
         {
             this.PageNumber = PageNumber;
-            MyUsers = userData.GetByUsername(null,batchSize,batchSize*PageNumber);
+            MyUsers = userData.GetByUsername(SearchTerm, batchSize, batchSize*PageNumber);
+            UsersCount = userData.CountUsers(SearchTerm);
         }
     }
 }

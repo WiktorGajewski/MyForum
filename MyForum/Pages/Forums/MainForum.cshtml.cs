@@ -13,7 +13,8 @@ namespace MyForum.Pages.Forums
     public class MainForumModel : PageModel
     {
         private readonly IMessageData messageData;
-        private readonly IHttpContextAccessor httpContextAccessor;
+
+        private readonly int batchSize = 10;
 
         public IEnumerable<ChatMessage> Messages { get; set; }
 
@@ -25,18 +26,19 @@ namespace MyForum.Pages.Forums
 
         public int PageNumber { get; set; }
 
+        public int BatchSize => batchSize;
+
         public MainForumModel(IMessageData messageData, IHttpContextAccessor httpContextAccessor)
         {
             this.messageData = messageData;
-            this.httpContextAccessor = httpContextAccessor;
             CurrentUserId = httpContextAccessor
                 .HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
         }
 
         public void OnGet(int PageNumber)
         {
-            Messages = messageData.GetLast10(null, PageNumber);
             this.PageNumber = PageNumber;
+            Messages = messageData.GetByGuildId(null, batchSize, batchSize*PageNumber);
         }
 
         public IActionResult OnPost()
@@ -51,7 +53,7 @@ namespace MyForum.Pages.Forums
                     Message = NewMessageContent
                 };
 
-                messageData.AddNewMessage(newMessage);
+                messageData.Add(newMessage);
                 messageData.Commit();
 
                 return RedirectToPage();

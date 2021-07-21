@@ -30,13 +30,13 @@ namespace MyForum.Pages.Guilds
         public IndexModel(IGuildData guildData)
         {
             this.guildData = guildData;
-            GuildsCount = guildData.CountGuilds();
         }
 
         public void OnGet(int PageNumber)
         {
             this.PageNumber = PageNumber;
             Guilds = guildData.GetByName(SearchTerm, BatchSize, BatchSize*PageNumber);
+            GuildsCount = guildData.CountGuilds(SearchTerm);
         }
     }
 }

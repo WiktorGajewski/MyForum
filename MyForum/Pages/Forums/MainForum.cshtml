@@ -4,17 +4,15 @@
 @{
     ViewData["Title"] = "Main Forum";
     var countMessages = Model.Messages.Count();
-    var pageNumber = Model.PageNumber;
 }
 
-@if (countMessages >= 10)
+@if (countMessages >= Model.BatchSize)
 {
     <br />
     <span class="page-item">
-        <a asp-page="" asp-route-PageNumber="@(pageNumber+1)" class="btn btn-outline-secondary page-link">Load previous messages</a>
+        <a asp-page="" asp-route-PageNumber="@(Model.PageNumber+1)" class="btn btn-outline-secondary page-link">Load previous messages</a>
     </span>
 }
-
 
 @if (Model.Messages != null)
 {
@@ -62,11 +60,11 @@
 </form>
 
 
-@if (pageNumber > 0)
+@if (Model.PageNumber > 0)
 {
     <br />
     <span class="page-item">
-        <a asp-page="" asp-route-PageNumber="@(pageNumber-1)" class="btn btn-outline-secondary page-link">Load next messages</a>
+        <a asp-page="" asp-route-PageNumber="@(Model.PageNumber-1)" class="btn btn-outline-secondary page-link">Load next messages</a>
     </span>
 }
 
