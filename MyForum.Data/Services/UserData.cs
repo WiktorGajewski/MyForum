@@ -45,6 +45,23 @@ namespace MyForum.Data.Services
             return query;
         }
 
+        public IEnumerable<MyUser> GetByUsername(string username, int usersToTake, int usersToSkip)
+        {
+            var query = db.Users
+                .Where(u => username == null || u.UserName.StartsWith(username))
+                .OrderBy(u => u.PrestigePoints)
+                .Skip(usersToSkip)
+                .Take(usersToTake)
+                .ToList();
+
+            return query;
+        }
+
+        public int CountUsers()
+        {
+            return db.Users.Count();
+        }
+
         public MyUser SetUpNewRank(string id, Rank rank)
         {
             var user = GetById(id);

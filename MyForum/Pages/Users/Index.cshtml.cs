@@ -10,19 +10,29 @@ namespace MyForum.Pages.Users
     {
         private readonly IUserData userData;
 
+        private readonly int batchSize = 4;
+
         [TempData]
         public string Message { get; set; }
 
+        public int UsersCount { get; set; }
+
+        public int PageNumber { get; set; }
+
         public IEnumerable<MyUser> MyUsers { get; set; }
+
+        public int BatchSize => batchSize;
 
         public IndexModel(IUserData userData)
         {
             this.userData = userData;
+            UsersCount = userData.CountUsers();
         }
 
-        public void OnGet()
+        public void OnGet(int PageNumber)
         {
-            MyUsers = userData.GetByUsername(null);
+            this.PageNumber = PageNumber;
+            MyUsers = userData.GetByUsername(null,batchSize,batchSize*PageNumber);
         }
     }
 }

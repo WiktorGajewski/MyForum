@@ -50,6 +50,23 @@ namespace MyForum.Data.Services
             return query;
         }
 
+        public IEnumerable<Guild> GetByName(string name, int guildsToTake, int guildsToSkip)
+        {
+            var query = db.Guilds
+                .Where(g => name == null || g.Name.StartsWith(name))
+                .OrderBy(g => g.Name)
+                .Skip(guildsToSkip)
+                .Take(guildsToTake)
+                .ToList();
+
+            return query;
+        }
+
+        public int CountGuilds()
+        {
+            return db.Guilds.Count();
+        }
+
         public Guild Update(Guild updatedGuild)
         {
             var entity = db.Guilds.Attach(updatedGuild);
