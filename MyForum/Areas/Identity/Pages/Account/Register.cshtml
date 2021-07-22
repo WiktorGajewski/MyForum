@@ -30,7 +30,10 @@
                     <label asp-for="Input.ConfirmPassword"></label>
                     <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
                 </div>
-                <div class="m-4 g-recaptcha" data-sitekey=@Model.GoogleReCaptchaKey></div>
+                @if (Model.CaptchaOn)
+                {
+                    <div class="m-4 g-recaptcha" data-sitekey=@Model.GoogleReCaptchaKey></div>
+                }
                 <br />
                 <button type="submit" class="btn btn-primary">Register</button>
             </form>

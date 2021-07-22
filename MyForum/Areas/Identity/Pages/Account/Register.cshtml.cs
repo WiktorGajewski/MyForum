@@ -32,6 +32,7 @@ namespace MyForum.Areas.Identity.Pages.Account
             _logger = logger;
             _config = config;
             reCaptchaResult = new GoogleRecaptchaResult();
+            CaptchaOn = _config.GetValue<bool>("MySettings:CaptchaOn");
         }
 
         [BindProperty]
@@ -40,6 +41,8 @@ namespace MyForum.Areas.Identity.Pages.Account
         public string ReturnUrl { get; set; }
 
         public string GoogleReCaptchaKey { get; set; }
+
+        public bool CaptchaOn { get; set; }
 
         public class InputModel
         {
@@ -80,17 +83,20 @@ namespace MyForum.Areas.Identity.Pages.Account
                     Rank = Rank.Novice
                 };
 
-                string EncodedResponse = Request.Form["g-Recaptcha-Response"];
-                string secret = _config["GoogleReCaptcha:secret"];
-                bool isCaptchaValid = (reCaptchaResult.Validate(EncodedResponse, secret) == "true" ? true : false);
-
-                if (!isCaptchaValid)    //Captcha check
+                if(CaptchaOn)
                 {
-                    ModelState.AddModelError(string.Empty, "You failed the CAPTCHA");
-                    GoogleReCaptchaKey = _config["GoogleReCaptcha:key"];
-                    return Page();
-                }
+                    string EncodedResponse = Request.Form["g-Recaptcha-Response"];
+                    string secret = _config["GoogleReCaptcha:secret"];
+                    bool isCaptchaValid = (reCaptchaResult.Validate(EncodedResponse, secret) == "true" ? true : false);
 
+                    if (!isCaptchaValid)    //Captcha check
+                    {
+                        ModelState.AddModelError(string.Empty, "You failed the CAPTCHA");
+                        GoogleReCaptchaKey = _config["GoogleReCaptcha:key"];
+                        return Page();
+                    }
+                }
+                
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
