@@ -1,0 +1,15 @@
+﻿@page "{guildId:int}"
+@model MyForum.Pages.Guilds.DeleteModel
+@{
+    ViewData["Title"] = "Delete";
+}
+
+
+<h2>Delete</h2>
+<div class="alert alert-danger">
+    Are you sure you want to delete @Model.Guild.Name ?
+</div>
+<form method="post">
+    <button type="submit" class="btn btn-danger">Yes</button>
+    <a asp-page="Index" class="btn btn-primary">Cancel</a>
+</form>

@@ -1,0 +1,104 @@
+﻿@page "{PageNumber:int=0}"
+@model MyForum.Pages.Users.IndexModel
+
+@using Microsoft.AspNetCore.Authorization
+@using MyForum.Core
+@inject IAuthorizationService AuthorizationService
+
+@{
+    ViewData["Title"] = "Users";
+
+    var isLeaderAuthorizationResult = await AuthorizationService.AuthorizeAsync(User, "IsLeader");
+}
+
+<h1>Users</h1>
+
+<form method="get">
+    <div class="form-group">
+        <div class="input-group">
+            <input type="search" class="form-control"
+                   asp-for="SearchTerm" />
+            <span class="input-group-btn">
+                <button class="btn btn-primary" type="submit">
+                    <i>Filter</i>
+                </button>
+            </span>
+        </div>
+    </div>
+</form>
+
+@if (Model.Message != null)
+{
+    <div class="alet alert-info">@Model.Message</div>
+}
+
+<p class="text-info">
+    Showing positions: @(Model.BatchSize * Model.PageNumber + 1) - @(Model.BatchSize * (Model.PageNumber+1))
+    <br />Number of users: @Model.UsersCount
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Prestige points</th>
+            <th>Rank</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model.MyUsers)
+        {
+            <tr>
+                <td>@user.UserName</td>
+                <td>@user.PrestigePoints</td>
+                <td>@user.Rank</td>
+
+                <td class="text-justify">
+                    <a class="text-primary navbar-text link-primary"
+                       asp-page="./Details"
+                       asp-route-userId="@user.Id">
+                        Details
+                    </a>
+
+                    @if (isLeaderAuthorizationResult.Succeeded)
+                    {
+                        <text>
+                            |
+                            <a class="text-primary navbar-text link-primary"
+                               asp-page="./ManageRank"
+                               asp-route-userId="@user.Id">
+                                Manage Rank
+                            </a>
+                            |
+                            <a class="text-primary navbar-text link-primary"
+                               asp-page="./Delete"
+                               asp-route-userId="@user.Id">
+                                Delete
+                            </a>
+                        </text>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<ul class="pagination justify-content-center">
+
+    @if (Model.PageNumber > 0)
+    {
+        <li class="page-item col-5">
+            <a asp-page="" asp-route-PageNumber="@(Model.PageNumber-1)" class="btn btn-outline-secondary page-link">Previous</a>
+        </li>
+
+    }
+
+    @if (Model.UsersCount > (Model.BatchSize * (Model.PageNumber + 1)))
+    {
+        <li class="page-item col-5">
+            <a asp-page="" asp-route-PageNumber="@(Model.PageNumber + 1)" class="btn btn-outline-secondary page-link">Next</a>
+        </li>
+    }
+
+</ul>

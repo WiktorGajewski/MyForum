@@ -1,0 +1,47 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Profile";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+}
+
+@*<h4>@ViewData["Title"]</h4>
+<partial name="_StatusMessage" model="Model.StatusMessage" />
+
+Username
+<h5>@Model.MyUser.UserName</h5>
+Registration date
+<h5>@Model.MyUser.RegistrationDate.ToShortDateString()</h5>
+Rank:
+<h5>@Model.MyUser.Rank</h5>
+Prestige points:
+<h5>@Model.MyUser.PrestigePoints</h5>
+
+<br />
+<a asp-page="/Index" class="btn btn-outline-secondary"> Return</a>*@
+
+
+<div class="row">
+    <div class="col-1 col-md-3"></div>
+
+    <div class="text-center shadow rounded p-4 col-10 col-md-6">
+        <h2>@ViewData["Title"]</h2>
+        <partial name="_StatusMessage" model="Model.StatusMessage" />
+
+        Username
+        <h5>@Model.MyUser.UserName</h5>
+        Registration date
+        <h5>@Model.MyUser.RegistrationDate.ToShortDateString()</h5>
+        Rank
+        <h5>@Model.MyUser.Rank</h5>
+        Prestige points
+        <h5>@Model.MyUser.PrestigePoints</h5>
+
+        <br />
+        <a asp-page="/Index" class="btn btn-outline-secondary"> Return</a>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

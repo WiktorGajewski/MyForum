@@ -1,0 +1,105 @@
+﻿@page "{PageNumber:int=0}"
+@model MyForum.Pages.Guilds.IndexModel
+
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+
+@{
+    ViewData["Title"] = "Guilds";
+
+    var isLeaderAuthorizationResult = await AuthorizationService.AuthorizeAsync(User, "IsLeader");
+}
+
+<h1>Guilds</h1>
+
+<form method="get">
+    <div class="form-group">
+        <div class="input-group">
+            <input type="search" class="form-control"
+                   asp-for="SearchTerm" />
+            <span class="input-group-btn">
+                <button class="btn btn-primary" type="submit">
+                    <i>Filter</i>
+                </button>
+            </span>
+        </div>
+    </div>
+</form>
+
+@if (Model.Message != null)
+{
+    <div class="alet alert-info">@Model.Message</div>
+}
+
+<p class="text-info">
+    Showing positions: @(Model.BatchSize * Model.PageNumber + 1) - @(Model.BatchSize * (Model.PageNumber+1))
+    <br />Number of guilds: @Model.GuildsCount
+</p>
+
+@if (isLeaderAuthorizationResult.Succeeded)
+{
+    <a asp-page=".\Edit" class="btn btn-primary mt-2 mb-4">Add new</a>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var guild in Model.Guilds)
+        {
+            <tr>
+                <td>@guild.Name</td>
+                <td class="text-justify">
+                    <a class="text-primary navbar-text"
+                       asp-page="./Details"
+                       asp-route-guildId="@guild.Id">
+                        Details
+                    </a>
+
+                    @if (isLeaderAuthorizationResult.Succeeded)
+                    {
+                        <text>
+                            |
+                            <a class="text-primary navbar-text"
+                               asp-page="./Edit"
+                               asp-route-guildId="@guild.Id">
+                                Edit
+                            </a>
+                            |
+                            <a class="text-primary navbar-text"
+                               asp-page="./Delete"
+                               asp-route-guildId="@guild.Id">
+                                Delete
+                            </a>
+                        </text>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<br />
+
+<ul class="pagination justify-content-center">
+
+    @if (Model.PageNumber > 0)
+    {
+        <li class="page-item col-5">
+            <a asp-page="" asp-route-PageNumber="@(Model.PageNumber-1)" class="btn btn-outline-secondary page-link">Previous</a>
+        </li>
+
+    }
+
+    @if (Model.GuildsCount > (Model.BatchSize * (Model.PageNumber + 1)))
+    {
+        <li class="page-item col-5">
+            <a asp-page="" asp-route-PageNumber="@(Model.PageNumber + 1)" class="btn btn-outline-secondary page-link">Next</a>
+        </li>
+    }
+
+</ul>

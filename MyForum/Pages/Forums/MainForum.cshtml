@@ -1,0 +1,84 @@
+﻿@page "{PageNumber:int=0}"
+@model MyForum.Pages.Forums.MainForumModel
+
+@{
+    ViewData["Title"] = "Main Forum";
+    var countMessages = Model.Messages.Count();
+}
+
+@if (countMessages >= Model.BatchSize)
+{
+    <br />
+    <span class="page-item">
+        <a asp-page="" asp-route-PageNumber="@(Model.PageNumber+1)" class="btn btn-outline-secondary page-link">Load previous messages</a>
+    </span>
+}
+else
+{
+    <p class="alert alert-info text-center">No older messages found</p>
+}
+
+@if (Model.Messages != null)
+{
+    @foreach (var message in Model.Messages)
+    {
+        @if (Model.CurrentUserId == message.FromUserId)
+        {
+            <div class="card border-dark mt-4 mb-4 col-8 p-0 float-left float-start">
+                <div class="card-header bg-success text-light text-center">
+                    @message.FromUser.UserName
+                </div>
+                <div class="card-body">
+                    <p class="card-text" style="white-space: pre-line">@message.Message</p>
+                </div>
+                <div class="card-footer">
+                    @message.Time
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="card border-dark mt-4 mb-4 col-8 p-0 float-right float-end">
+                <div class="card-header bg-secondary text-light text-center">
+                    @message.FromUser.UserName
+                </div>
+                <div class="card-body">
+                    <p class="card-text" style="white-space: pre-line">@message.Message</p>
+                </div>
+                <div class="card-footer">
+                    @message.Time
+                </div>
+            </div>
+        }
+    }
+}
+
+
+
+<form method="post">
+    <div class="input-group">
+        <textarea asp-for="NewMessageContent" class="form-control" rows="1"></textarea>
+        <button type="submit" class="btn btn-outline-primary">Send</button>
+    </div>
+</form>
+
+
+@if (Model.PageNumber > 0)
+{
+    <br />
+    <span class="page-item">
+        <a asp-page="" asp-route-PageNumber="@(Model.PageNumber-1)" class="btn btn-outline-secondary page-link">Load next messages</a>
+    </span>
+}
+
+
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $(document).ready(function () {
+            $(document).scrollTop($(document).height());
+        });
+    </script>
+}

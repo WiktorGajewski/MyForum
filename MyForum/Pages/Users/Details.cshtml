@@ -1,0 +1,21 @@
+﻿@page "{userId}"
+@model MyForum.Pages.Users.DetailsModel
+@{
+    ViewData["Title"] = "Details";
+}
+
+@if (Model.Message != null)
+{
+    <div class="alet alert-info">@Model.Message</div>
+}
+
+<h2>@Model.MyUser.UserName</h2>
+
+<p>Registration date: @Model.MyUser.RegistrationDate.ToShortDateString()</p>
+
+<p>Rank: @Model.MyUser.Rank</p>
+
+<p>Prestige points: @Model.MyUser.PrestigePoints</p>
+
+<br />
+<a asp-page="Index" class="btn btn-outline-secondary"> Return to the list of users</a>
