@@ -13,6 +13,10 @@
         <a asp-page="" asp-route-PageNumber="@(Model.PageNumber+1)" class="btn btn-outline-secondary page-link">Load previous messages</a>
     </span>
 }
+else
+{
+    <p class="alert alert-info text-center">No older messages found</p>
+}
 
 @if (Model.Messages != null)
 {
@@ -20,7 +24,7 @@
     {
         @if (Model.CurrentUserId == message.FromUserId)
         {
-            <div class="card border-dark mt-4 mb-4 col-8 p-0 float-left">
+            <div class="card border-dark mt-4 mb-4 col-8 p-0 float-left float-start">
                 <div class="card-header bg-success text-light text-center">
                     @message.FromUser.UserName
                 </div>
@@ -34,7 +38,7 @@
         }
         else
         {
-            <div class="card border-dark mt-4 mb-4 col-8 p-0 float-right">
+            <div class="card border-dark mt-4 mb-4 col-8 p-0 float-right float-end">
                 <div class="card-header bg-secondary text-light text-center">
                     @message.FromUser.UserName
                 </div>
@@ -52,7 +56,6 @@
 
 
 <form method="post">
-    <span class="alert-danger" asp-validation-for="NewMessageContent"></span>
     <div class="input-group">
         <textarea asp-for="NewMessageContent" class="form-control" rows="1"></textarea>
         <button type="submit" class="btn btn-outline-primary">Send</button>

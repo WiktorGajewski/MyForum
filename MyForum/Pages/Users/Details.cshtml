@@ -11,7 +11,9 @@
 
 <h2>@Model.MyUser.UserName</h2>
 
-<p>Registration date: @Model.MyUser.RegistrationDate</p>
+<p>Registration date: @Model.MyUser.RegistrationDate.ToShortDateString()</p>
+
+<p>Rank: @Model.MyUser.Rank</p>
 
 <p>Prestige points: @Model.MyUser.PrestigePoints</p>
 

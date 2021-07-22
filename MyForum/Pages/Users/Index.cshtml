@@ -55,7 +55,7 @@
                 <td>@user.Rank</td>
 
                 <td class="text-justify">
-                    <a class="text-primary navbar-te"
+                    <a class="text-primary navbar-text link-primary"
                        asp-page="./Details"
                        asp-route-userId="@user.Id">
                         Details
@@ -65,13 +65,13 @@
                     {
                         <text>
                             |
-                            <a class="text-primary navbar-text"
+                            <a class="text-primary navbar-text link-primary"
                                asp-page="./ManageRank"
                                asp-route-userId="@user.Id">
                                 Manage Rank
                             </a>
                             |
-                            <a class="text-primary navbar-text"
+                            <a class="text-primary navbar-text link-primary"
                                asp-page="./Delete"
                                asp-route-userId="@user.Id">
                                 Delete
