@@ -2,13 +2,15 @@
 @model MyForum.Pages.Users.IndexModel
 
 @using Microsoft.AspNetCore.Authorization
-@using MyForum.Core
+@using MyForum.Data.Interfaces
 @inject IAuthorizationService AuthorizationService
+@inject IInvitationData InvitationData
 
 @{
     ViewData["Title"] = "Users";
 
     var isLeaderAuthorizationResult = await AuthorizationService.AuthorizeAsync(User, "IsLeader");
+    var isGuildmasterAuthorizationResult = await AuthorizationService.AuthorizeAsync(User, "IsGuildmaster");
 }
 
 <h1>Users</h1>
@@ -75,6 +77,19 @@
                                asp-page="./Delete"
                                asp-route-userId="@user.Id">
                                 Delete
+                            </a>
+                        </text>
+                    }
+
+                    @if (isGuildmasterAuthorizationResult.Succeeded && (Model.ManagedGuildId != null)
+                       && ( InvitationData.Find(user.Id, Model.ManagedGuildId.Value) == null ))
+                    {
+                        <text>
+                            |
+                            <a class="text-primary navbar-text link-primary"
+                               asp-page="./SendInvitation"
+                               asp-route-userId="@user.Id">
+                                Send invitation to your Guild
                             </a>
                         </text>
                     }

@@ -24,6 +24,7 @@ namespace MyForum.Pages.Guilds
 
             if(Guild == null)
             {
+                TempData["Message"] = "Guild was not found";
                 return RedirectToPage("./NotFound");
             }
 
@@ -37,6 +38,7 @@ namespace MyForum.Pages.Guilds
 
             if(guild == null)
             {
+                TempData["Message"] = "Guild was not found";
                 return RedirectToPage("./NotFound");
             }
 

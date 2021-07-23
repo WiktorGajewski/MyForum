@@ -39,7 +39,7 @@ namespace MyForum.Data.Services
 
         public Invitation Find(string userId, int guildId)
         {
-            return db.Invitations.Find(new { UserId = userId, GuildId = guildId });
+            return db.Invitations.Find(guildId, userId);
         }
 
         public IEnumerable<Invitation> GetByGuildId(int guildId)

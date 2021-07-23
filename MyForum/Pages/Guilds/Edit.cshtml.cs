@@ -36,7 +36,8 @@ namespace MyForum.Pages.Guilds
         {
             if (!CheckPermissionsToEdit(guildId))
             {
-                return Unauthorized();  //replace with Access denied
+                TempData["Message"] = "You have no permission to edit this guild!";
+                return RedirectToPage("./NotFound");
             }
 
             if (guildId.HasValue)
@@ -52,6 +53,7 @@ namespace MyForum.Pages.Guilds
             
             if(Guild == null)
             {
+                TempData["Message"] = "Guild was not found";
                 return RedirectToPage("./NotFound");
             }
 
@@ -62,7 +64,8 @@ namespace MyForum.Pages.Guilds
         {
             if (!CheckPermissionsToEdit(Guild?.Id))
             {
-                return Unauthorized();  //replace with Access denied
+                TempData["Message"] = "You have no permission to edit this guild!";
+                return RedirectToPage("./NotFound");
             }
 
             if (!ModelState.IsValid)

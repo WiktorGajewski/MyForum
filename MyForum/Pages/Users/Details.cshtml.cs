@@ -29,6 +29,7 @@ namespace MyForum.Pages.Users
 
             if(MyUser == null)
             {
+                TempData["Message"] = "User was not found";
                 return RedirectToPage("./NotFound");
             }
 

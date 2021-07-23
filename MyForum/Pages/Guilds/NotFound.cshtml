@@ -1,9 +1,14 @@
 ﻿@page
 @{
     ViewData["Title"] = "Not Found";
+
+    var Message = TempData["Message"];
 }
 
-<h2>Guild was not found</h2>
+@if(Message != null)
+{
+    <h2 class="alert alert-danger">@Message</h2>
+}
 
 <br />
 <a asp-page="Index" class="btn btn-outline-secondary"> Return to the list of guilds</a>
