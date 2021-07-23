@@ -47,6 +47,7 @@
         <tr>
             <th>Name</th>
             <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -88,6 +89,13 @@
                             </a>
                         </text>
                     }
+                </td>
+                <td>
+                    <a class="text-success navbar-text"
+                       asp-page="../Forums/Index"
+                       asp-route-guildId="@guild.Id">
+                        Enter Forum
+                    </a>
                 </td>
             </tr>
         }

@@ -84,7 +84,9 @@ namespace MyForum.Pages.Guilds
 
                 if (User.FindFirst("Rank").Value == "Guildmaster")
                 {
-                    guildData.AssignGuildmaster(Guild.Id, User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                    var guildmasterId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                    guildData.AssignGuildmaster(Guild.Id, guildmasterId);
+                    guildData.AddMember(Guild.Id, guildmasterId);
                 }
             }
             
