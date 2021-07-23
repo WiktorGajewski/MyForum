@@ -36,7 +36,7 @@ namespace MyForum.Pages.Users
 
         public IActionResult OnGet(string userId)
         {
-            var user = userData.GetById(userId);
+            var user = userData.GetByIdWithGuilds(userId);
             
             if (user == null)
             {
@@ -50,13 +50,21 @@ namespace MyForum.Pages.Users
                 return RedirectToPage("./NotFound");
             }
 
+            var guild = guildData.GetById(managedGuildId.Value);
+
+            if (user.GuildsMembership.Contains(guild))
+            {
+                TempData["Message"] = "User is already a member of your guild";
+                return RedirectToPage("./NotFound");
+            }
+
             if (invitationData.Find(user.Id, managedGuildId.Value) != null)
             {
                 TempData["Message"] = "User has already been invited to your guild";
                 return RedirectToPage("./NotFound");
             }
 
-            var guild = guildData.GetById(managedGuildId.Value);
+            
 
             NewInvitation = new Invitation
             {

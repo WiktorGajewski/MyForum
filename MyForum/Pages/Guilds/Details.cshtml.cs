@@ -21,7 +21,7 @@ namespace MyForum.Pages.Guilds
 
         public IActionResult OnGet(int guildId)
         {
-            Guild = guildData.GetById(guildId);
+            Guild = guildData.GetByIdWithMembers(guildId);
 
             if(Guild == null)
             {

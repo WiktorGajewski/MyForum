@@ -43,6 +43,13 @@ namespace MyForum.Data.Services
             return db.Guilds.Find(id);
         }
 
+        public Guild GetByIdWithMembers(int id)
+        {
+            return db.Guilds.Where(g => g.Id == id)
+                .Include(g => g.Members)
+                .FirstOrDefault();
+        }
+
         public IEnumerable<Guild> GetByName(string name)
         {
             var query = db.Guilds
@@ -97,8 +104,8 @@ namespace MyForum.Data.Services
 
         public Guild AddMember(int guildId, string memberId)
         {
-            var guild = GetById(guildId);
-            var user = userData.GetById(memberId);
+            var guild = GetByIdWithMembers(guildId);
+            var user = userData.GetByIdWithGuilds(memberId);
 
             if(guild != null && user != null)
             {

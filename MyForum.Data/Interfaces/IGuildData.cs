@@ -9,6 +9,7 @@ namespace MyForum.Data.Interfaces
         IEnumerable<Guild> GetByName(string name, int guildsToTake, int guildsToSkip);
         int CountGuilds(string name = null);
         Guild GetById(int id);
+        Guild GetByIdWithMembers(int id);
         Guild Update(Guild updatedGuild);
         Guild Add(Guild newGuild);
         Guild Delete(int id);

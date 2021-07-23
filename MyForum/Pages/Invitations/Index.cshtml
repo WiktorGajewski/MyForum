@@ -1,4 +1,32 @@
 ﻿@page
 @model MyForum.Pages.Invitations.IndexModel
 @{
+    ViewData["Title"] = "Invitations";
 }
+
+<h3>@ViewData["Title"]</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Message</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var invitation in Model.Invitations)
+        {
+        <tr>
+            <td>@invitation.Message</td>
+            <td>
+                <form method="post">
+                    <button type="submit" asp-page-handler="Accept" asp-route-guildId="@(invitation.GuildId)" class="btn btn-success">Accept</button>
+                    <button type="submit" asp-page-handler="Decline" asp-route-guildId="@(invitation.GuildId)" class="btn btn-danger">Decline</button>
+                </form>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+
+<br />
+

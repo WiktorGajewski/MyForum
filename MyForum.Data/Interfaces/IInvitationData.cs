@@ -6,7 +6,6 @@ namespace MyForum.Data.Interfaces
     public interface IInvitationData
     {
         Invitation Add(Invitation newInvitation);
-        Invitation Delete(Invitation invitationToDelete);
         Invitation Delete(string userId, int guildId);
         IEnumerable<Invitation> GetByUserId(string userId);
         IEnumerable<Invitation> GetByGuildId(int guildId);

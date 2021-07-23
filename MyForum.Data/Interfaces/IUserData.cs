@@ -9,6 +9,7 @@ namespace MyForum.Data.Interfaces
         IEnumerable<MyUser> GetByUsername(string username, int usersToTake, int usersToSkip);
         int CountUsers(string name = null);
         MyUser GetById(string id);
+        MyUser GetByIdWithGuilds(string id);
         MyUser Delete(string id);
         int Commit();
         MyUser SetUpNewRank(string id, Rank rank);

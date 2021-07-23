@@ -36,6 +36,13 @@ namespace MyForum.Data.Services
             return db.Users.Find(id);
         }
 
+        public MyUser GetByIdWithGuilds(string id)
+        {
+            return db.Users.Where(u => u.Id == id)
+                .Include(u => u.GuildsMembership)
+                .FirstOrDefault();
+        }
+
         public IEnumerable<MyUser> GetByUsername(string username)
         {
             var query = db.Users

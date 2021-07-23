@@ -20,12 +20,6 @@ namespace MyForum.Data.Services
             return newInvitation;
         }
 
-        public Invitation Delete(Invitation invitationToDelete)
-        {
-            db.Invitations.Remove(invitationToDelete);
-            return invitationToDelete;
-        }
-
         public Invitation Delete(string userId, int guildId)
         {
             var invitation = Find(userId, guildId);

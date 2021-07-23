@@ -13,7 +13,25 @@
 <h2>@Model.Guild.Name</h2>
 
 <div>
-    Members:
+    <h4>Members</h4>
+
+    <table class="table">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var member in Model.Guild.Members)
+        {
+            <tr>
+                <td>@member.UserName</td>
+            </tr>
+        }
+    </tbody>
+    </table>
+
 </div>
 
 <br />
