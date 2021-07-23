@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -35,6 +36,7 @@ namespace MyForum
             services.AddScoped<IGuildData, GuildData>();
             services.AddScoped<IUserData, UserData>();
             services.AddScoped<IMessageData, MessageData>();
+            services.AddScoped<IInvitationData, InvitationData>();
 
             services.AddRazorPages();
             //services.AddControllers();
@@ -49,6 +51,11 @@ namespace MyForum
                     policy.RequireClaim("Rank", "Guildmaster"));
                 options.AddPolicy("IsLeader", policy =>
                     policy.RequireClaim("Rank", "Leader"));
+                options.AddPolicy("IsLeaderOrGuildmaster", policy =>
+                    policy.RequireAssertion(context => context.User.HasClaim( c=>
+                        ( (c.Type == "Rank" && c.Value == "Leader") ||
+                          (c.Type == "Rank" && c.Value == "Guildmaster") )
+                    )));
                 options.AddPolicy("2YearsOfService",
                     policy => policy.AddRequirements(
                         new YearsOfServiceRequirement(2)

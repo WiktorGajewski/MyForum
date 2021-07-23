@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyForum.Data;
 
 namespace MyForum.Data.Migrations
 {
     [DbContext(typeof(MyForumDbContext))]
-    partial class MyForumDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210722153907_AddInvitationsAndGroupMembers")]
+    partial class AddInvitationsAndGroupMembers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -202,7 +204,7 @@ namespace MyForum.Data.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("GuildmasterId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -210,6 +212,8 @@ namespace MyForum.Data.Migrations
                         .HasColumnType("nvarchar(80)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GuildmasterId");
 
                     b.ToTable("Guilds");
                 });
@@ -298,9 +302,7 @@ namespace MyForum.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ManagedGuildId")
-                        .IsUnique()
-                        .HasFilter("[ManagedGuildId] IS NOT NULL");
+                    b.HasIndex("ManagedGuildId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -396,6 +398,15 @@ namespace MyForum.Data.Migrations
                     b.Navigation("GuildForum");
                 });
 
+            modelBuilder.Entity("MyForum.Core.Guild", b =>
+                {
+                    b.HasOne("MyForum.Core.MyUser", "Guildmaster")
+                        .WithMany()
+                        .HasForeignKey("GuildmasterId");
+
+                    b.Navigation("Guildmaster");
+                });
+
             modelBuilder.Entity("MyForum.Core.Invitation", b =>
                 {
                     b.HasOne("MyForum.Core.Guild", "Guild")
@@ -418,9 +429,8 @@ namespace MyForum.Data.Migrations
             modelBuilder.Entity("MyForum.Core.MyUser", b =>
                 {
                     b.HasOne("MyForum.Core.Guild", "ManagedGuild")
-                        .WithOne("Guildmaster")
-                        .HasForeignKey("MyForum.Core.MyUser", "ManagedGuildId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .WithMany()
+                        .HasForeignKey("ManagedGuildId");
 
                     b.Navigation("ManagedGuild");
                 });
@@ -428,8 +438,6 @@ namespace MyForum.Data.Migrations
             modelBuilder.Entity("MyForum.Core.Guild", b =>
                 {
                     b.Navigation("ForumChatMessages");
-
-                    b.Navigation("Guildmaster");
 
                     b.Navigation("Invitations");
                 });

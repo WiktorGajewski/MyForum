@@ -8,6 +8,7 @@
     ViewData["Title"] = "Guilds";
 
     var isLeaderAuthorizationResult = await AuthorizationService.AuthorizeAsync(User, "IsLeader");
+    var isGuildmasterAuthorizationResult = await AuthorizationService.AuthorizeAsync(User, "IsGuildmaster");
 }
 
 <h1>Guilds</h1>
@@ -32,11 +33,11 @@
 }
 
 <p class="text-info">
-    Showing positions: @(Model.BatchSize * Model.PageNumber + 1) - @(Model.BatchSize * (Model.PageNumber+1))
+    Showing positions: @(Model.BatchSize * Model.PageNumber + 1) - @(Model.BatchSize * (Model.PageNumber + 1))
     <br />Number of guilds: @Model.GuildsCount
 </p>
 
-@if (isLeaderAuthorizationResult.Succeeded)
+@if (isLeaderAuthorizationResult.Succeeded || (isGuildmasterAuthorizationResult.Succeeded && Model.ManagedGuildId == null))
 {
     <a asp-page=".\Edit" class="btn btn-primary mt-2 mb-4">Add new</a>
 }
@@ -59,7 +60,17 @@
                        asp-route-guildId="@guild.Id">
                         Details
                     </a>
-
+                    @if (isGuildmasterAuthorizationResult.Succeeded && guild.Id == Model.ManagedGuildId)
+                    {
+                        <text>
+                            |
+                            <a class="text-primary navbar-text"
+                               asp-page="./Edit"
+                               asp-route-guildId="@guild.Id">
+                                Edit
+                            </a>
+                        </text>
+                    }
                     @if (isLeaderAuthorizationResult.Succeeded)
                     {
                         <text>

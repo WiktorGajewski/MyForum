@@ -9,10 +9,12 @@ namespace MyForum.Data.Services
     public class GuildData : IGuildData
     {
         private readonly MyForumDbContext db;
+        private readonly IUserData userData;
 
-        public GuildData(MyForumDbContext db)
+        public GuildData(MyForumDbContext db, IUserData userData)
         {
             this.db = db;
+            this.userData = userData;
         }
 
         public Guild Add(Guild newGuild)
@@ -75,6 +77,50 @@ namespace MyForum.Data.Services
             var entity = db.Guilds.Attach(updatedGuild);
             entity.State = EntityState.Modified;
             return updatedGuild;
+        }
+
+        public Guild AssignGuildmaster(int guildId, string guildmasterId)
+        {
+            var guild = GetById(guildId);
+            var user = userData.GetById(guildmasterId);
+
+            if (guild != null && user != null)
+            {
+                guild.GuildmasterId = guildmasterId;
+                guild.Guildmaster = user;
+                user.ManagedGuildId = guildId;
+                user.ManagedGuild = guild;
+            }
+
+            return guild;
+        }
+
+        public Guild AddMember(int guildId, string memberId)
+        {
+            var guild = GetById(guildId);
+            var user = userData.GetById(memberId);
+
+            if(guild != null && user != null)
+            {
+                guild.Members.Add(user);
+                user.GuildsMembership.Add(guild);
+            }
+
+            return guild;
+        }
+
+        public Guild RemoveMember(int guildId, string memberId)
+        {
+            var guild = GetById(guildId);
+            var user = userData.GetById(memberId);
+
+            if (guild != null && user != null)
+            {
+                guild.Members.Remove(user);
+                user.GuildsMembership.Remove(guild);
+            }
+
+            return guild;
         }
     }
 }

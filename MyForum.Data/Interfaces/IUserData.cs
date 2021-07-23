@@ -12,5 +12,6 @@ namespace MyForum.Data.Interfaces
         MyUser Delete(string id);
         int Commit();
         MyUser SetUpNewRank(string id, Rank rank);
+        int? GetManagedGuildId(string userId);
     }
 }

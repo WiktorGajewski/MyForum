@@ -26,7 +26,7 @@ else
         {
             <div class="card border-dark mt-4 mb-4 col-8 p-0 float-left float-start">
                 <div class="card-header bg-success text-light text-center">
-                    @message.FromUser.UserName
+                    @message.FromUser?.UserName
                 </div>
                 <div class="card-body">
                     <p class="card-text" style="white-space: pre-line">@message.Message</p>
@@ -40,7 +40,7 @@ else
         {
             <div class="card border-dark mt-4 mb-4 col-8 p-0 float-right float-end">
                 <div class="card-header bg-secondary text-light text-center">
-                    @message.FromUser.UserName
+                    @message.FromUser?.UserName
                 </div>
                 <div class="card-body">
                     <p class="card-text" style="white-space: pre-line">@message.Message</p>

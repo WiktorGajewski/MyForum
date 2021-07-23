@@ -8,6 +8,7 @@ namespace MyForum.Data
     {
         public DbSet<Guild> Guilds { get; set; }
         public DbSet<ChatMessage> Messages { get; set; }
+        public DbSet<Invitation> Invitations { get; set; }
 
         public MyForumDbContext(DbContextOptions<MyForumDbContext> options)
             :base(options)
@@ -24,12 +25,41 @@ namespace MyForum.Data
                 entity.HasOne(m => m.FromUser)
                     .WithMany(m => m.ChatMessages)
                     .HasForeignKey(m => m.FromUserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull);
+                    .OnDelete(DeleteBehavior.SetNull);
 
                 entity.HasOne(m => m.GuildForum)
                     .WithMany(m => m.ForumChatMessages)
                     .HasForeignKey(m => m.GuildId)
-                    .OnDelete(DeleteBehavior.ClientSetNull);
+                    .OnDelete(DeleteBehavior.SetNull);
+            });
+
+            modelBuilder.Entity<Invitation>(entity =>
+            {
+                entity.HasOne(i => i.User)
+                    .WithMany(i => i.Invitations)
+                    .HasForeignKey(i => i.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(i => i.Guild)
+                    .WithMany(i => i.Invitations)
+                    .HasForeignKey(i => i.GuildId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasKey(i => new { i.GuildId, i.UserId });
+            });
+
+            modelBuilder.Entity<Guild>(entity =>
+            {
+                entity.HasOne(u => u.Guildmaster)
+                    .WithOne(u => u.ManagedGuild)
+                    .HasForeignKey<MyUser>(g => g.ManagedGuildId)
+                    .OnDelete(DeleteBehavior.SetNull);
+            });
+
+            modelBuilder.Entity<MyUser>(entity =>
+            {
+                entity.HasMany(u => u.GuildsMembership)
+                    .WithMany(u => u.Members);
             });
         }
     }

@@ -13,7 +13,6 @@ namespace MyForum.Pages.Forums
     public class MainForumModel : PageModel
     {
         private readonly IMessageData messageData;
-
         private readonly int batchSize = 10;
 
         public IEnumerable<ChatMessage> Messages { get; set; }

@@ -13,5 +13,8 @@ namespace MyForum.Data.Interfaces
         Guild Add(Guild newGuild);
         Guild Delete(int id);
         int Commit();
+        Guild AssignGuildmaster(int guildId, string guildmasterId);
+        Guild AddMember(int guildId, string memberId);
+        Guild RemoveMember(int guildId, string memberId);
     }
 }

@@ -40,7 +40,8 @@ namespace MyForum.Data.Services
         {
             var query = db.Users
                 .Where(u => username == null || u.UserName.StartsWith(username))
-                .OrderBy(u => u.PrestigePoints)
+                .OrderByDescending(u => u.Rank)
+                .ThenByDescending(u => u.PrestigePoints)
                 .ToList();
 
             return query;
@@ -50,7 +51,8 @@ namespace MyForum.Data.Services
         {
             var query = db.Users
                 .Where(u => username == null || u.UserName.StartsWith(username))
-                .OrderBy(u => u.PrestigePoints)
+                .OrderByDescending(u => u.Rank)
+                .ThenByDescending(u => u.PrestigePoints)
                 .Skip(usersToSkip)
                 .Take(usersToTake)
                 .ToList();
@@ -70,6 +72,18 @@ namespace MyForum.Data.Services
             var user = GetById(id);
             user.Rank = rank;
             return user;
+        }
+
+        public int? GetManagedGuildId(string userId)
+        {
+            var user = GetById(userId);
+
+            if(user != null)
+            {
+                return user.ManagedGuildId;
+            }
+
+            return null;
         }
     }
 }
