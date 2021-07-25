@@ -4,7 +4,7 @@
 @using Microsoft.AspNetCore.Authorization
 @using MyForum.Data.Interfaces
 @inject IAuthorizationService AuthorizationService
-@inject IInvitationData InvitationData
+@inject IInvitationRepository InvitationData
 
 @{
     ViewData["Title"] = "Users";
@@ -82,7 +82,7 @@
                     }
 
                     @if (isGuildmasterAuthorizationResult.Succeeded && (Model.ManagedGuildId != null)
-                       && ( InvitationData.Find(user.Id, Model.ManagedGuildId.Value) == null ))
+                       && ( InvitationData.Get(user.Id, Model.ManagedGuildId.Value) == null ))
                     {
                         <text>
                             |

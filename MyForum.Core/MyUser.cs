@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyForum.Core
 {
@@ -11,7 +10,6 @@ namespace MyForum.Core
         public int PrestigePoints { get; set; }
         public Rank Rank { get; set; }
 
-        [ForeignKey("ManagedGuild")]
         public int? ManagedGuildId { get; set; }
         public Guild ManagedGuild { get; set; }
 

@@ -11,14 +11,14 @@ namespace MyForum.Pages.Users
 {
     public class DetailsModel : PageModel
     {
-        private readonly IUserData userData;
+        private readonly IUserRepository userData;
 
         [TempData]
         public string Message { get; set; }
 
         public MyUser MyUser { get; set; }
 
-        public DetailsModel(IUserData userData)
+        public DetailsModel(IUserRepository userData)
         {
             this.userData = userData;
         }

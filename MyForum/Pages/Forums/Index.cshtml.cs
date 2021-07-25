@@ -12,9 +12,9 @@ namespace MyForum.Pages.Forums
 {
     public class IndexModel : PageModel
     {
-        private readonly IMessageData messageData;
-        private readonly IGuildData guildData;
-        private readonly IUserData userData;
+        private readonly IMessageRepository messageData;
+        private readonly IGuildRepostiory guildData;
+        private readonly IUserRepository userData;
         private readonly int batchSize = 10;
 
         public IEnumerable<ChatMessage> Messages { get; set; }
@@ -34,7 +34,7 @@ namespace MyForum.Pages.Forums
 
         public int BatchSize => batchSize;
 
-        public IndexModel(IMessageData messageData, IGuildData guildData, IUserData userData,
+        public IndexModel(IMessageRepository messageData, IGuildRepostiory guildData, IUserRepository userData,
             IHttpContextAccessor httpContextAccessor)
         {
             this.messageData = messageData;
@@ -89,7 +89,6 @@ namespace MyForum.Pages.Forums
                 };
 
                 messageData.Add(newMessage);
-                messageData.Commit();
 
                 return RedirectToPage();
             }
@@ -104,17 +103,12 @@ namespace MyForum.Pages.Forums
                 return true;
             }
 
-            if (guild.GuildmasterId == null)            //no Guildmaster =>  guild is open
-            {
-                return true;
-            }
-
             if(guild.GuildmasterId == CurrentUserId)    //Guidmaster always has access to his guild
             {
                 return true;
             }
 
-            var user = userData.GetByIdWithGuilds(CurrentUserId);
+            var user = userData.GetByIdWithMembershipData(CurrentUserId);
 
             if(user.GuildsMembership.Contains(guild))
             {

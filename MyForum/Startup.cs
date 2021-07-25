@@ -33,10 +33,10 @@ namespace MyForum
                 options.UseSqlServer(Configuration.GetConnectionString("MyForumDb"));
             });
 
-            services.AddScoped<IGuildData, GuildData>();
-            services.AddScoped<IUserData, UserData>();
-            services.AddScoped<IMessageData, MessageData>();
-            services.AddScoped<IInvitationData, InvitationData>();
+            services.AddScoped<IGuildRepostiory, GuildRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IMessageRepository, MessageRepository>();
+            services.AddScoped<IInvitationRepository, InvitationRepository>();
 
             services.AddRazorPages();
             //services.AddControllers();

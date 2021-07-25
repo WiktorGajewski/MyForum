@@ -10,14 +10,14 @@ namespace MyForum.Pages.Invitations
 {
     public class IndexModel : PageModel
     {
-        private readonly IInvitationData invitationData;
-        private readonly IGuildData guildData;
+        private readonly IInvitationRepository invitationData;
+        private readonly IGuildRepostiory guildData;
 
         public string CurrentUserId { get; set; }
 
         public IEnumerable<Invitation> Invitations { get; set; }
 
-        public IndexModel(IInvitationData invitationData, IGuildData guildData, IHttpContextAccessor httpContextAccessor)
+        public IndexModel(IInvitationRepository invitationData, IGuildRepostiory guildData, IHttpContextAccessor httpContextAccessor)
         {
             this.invitationData = invitationData;
             this.guildData = guildData;
@@ -34,7 +34,6 @@ namespace MyForum.Pages.Invitations
         {
             guildData.AddMember(guildId, CurrentUserId);
             invitationData.Delete(CurrentUserId, guildId);
-            invitationData.Commit();
 
             return RedirectToPage();
         }
@@ -42,7 +41,6 @@ namespace MyForum.Pages.Invitations
         public IActionResult OnPostDecline(int guildId)
         {
             invitationData.Delete(CurrentUserId, guildId);
-            invitationData.Commit();
 
             return RedirectToPage();
         }

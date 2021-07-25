@@ -14,11 +14,11 @@ namespace MyForum.Pages.Users
     [Authorize(Policy = "IsLeader")]
     public class DeleteModel : PageModel
     {
-        private readonly IUserData userData;
+        private readonly IUserRepository userData;
 
         public MyUser MyUser { get; set; }
 
-        public DeleteModel(IUserData userData)
+        public DeleteModel(IUserRepository userData)
         {
             this.userData = userData;
         }
@@ -38,16 +38,9 @@ namespace MyForum.Pages.Users
 
         public IActionResult OnPost(string userId)
         {
-            var user = userData.Delete(userId);
-            userData.Commit();
+            userData.Delete(userId);
 
-            if(user == null)
-            {
-                TempData["Message"] = "User was not found";
-                return RedirectToPage("./NotFound");
-            }
-
-            TempData["Message"] = $"{user.UserName} deleted";
+            TempData["Message"] = $"User deleted";
             return RedirectToPage("./Index");
         }
     }

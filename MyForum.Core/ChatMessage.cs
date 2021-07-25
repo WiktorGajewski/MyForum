@@ -15,6 +15,6 @@ namespace MyForum.Core
         public virtual MyUser FromUser { get; set; }
 
         public int? GuildId { get; set; }
-        public virtual Guild GuildForum { get; set; }
+        public virtual Guild Guild { get; set; }
     }
 }

@@ -10,7 +10,7 @@ namespace MyForum.Pages.Users
 {
     public class IndexModel : PageModel
     {
-        private readonly IUserData userData;
+        private readonly IUserRepository userData;
 
         private readonly int batchSize = 4;
 
@@ -30,18 +30,18 @@ namespace MyForum.Pages.Users
 
         public int BatchSize => batchSize;
 
-        public IndexModel(IUserData userData, IHttpContextAccessor httpContextAccessor)
+        public IndexModel(IUserRepository userData, IHttpContextAccessor httpContextAccessor)
         {
             this.userData = userData;
             var currentUserId = httpContextAccessor
                 .HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            ManagedGuildId = userData.GetManagedGuildId(currentUserId);
+            ManagedGuildId = userData.GetManagedGuild(currentUserId)?.Id;
         }
 
         public void OnGet(int PageNumber)
         {
             this.PageNumber = PageNumber;
-            MyUsers = userData.GetByUsername(SearchTerm, batchSize, batchSize*PageNumber);
+            MyUsers = userData.GetByUserName(SearchTerm, batchSize, batchSize*PageNumber);
             UsersCount = userData.CountUsers(SearchTerm);
         }
     }

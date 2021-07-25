@@ -9,11 +9,11 @@ using System.Security.Claims;
 namespace MyForum.Pages.Guilds
 {
 
-    [Authorize(Policy = "IsLeaderOrGuildmaster")]
+    [Authorize(Policy = "IsGuildmaster")]
     public class EditModel : PageModel
     {
-        private readonly IGuildData guildData;
-        private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly IGuildRepostiory guildData;
+        private readonly IUserRepository userData;
 
         [BindProperty]
         public Guild Guild { get; set; }
@@ -21,40 +21,33 @@ namespace MyForum.Pages.Guilds
         [ViewData]
         public string Title { get; set; }
 
-        public int? ManagedGuildId { get; set; }
+        public string currentUserId{ get; set; }
 
-        public EditModel(IGuildData guildData, IHttpContextAccessor httpContextAccessor, IUserData userData)
+        public EditModel(IGuildRepostiory guildData, IHttpContextAccessor httpContextAccessor, IUserRepository userData)
         {
             this.guildData = guildData;
-            this.httpContextAccessor = httpContextAccessor;
-            var currentUserId = httpContextAccessor
+            this.userData = userData;
+            currentUserId = httpContextAccessor
                 .HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            ManagedGuildId = userData.GetManagedGuildId(currentUserId);
         }
 
         public IActionResult OnGet(int? guildId)
         {
-            if (!CheckPermissionsToEdit(guildId))
-            {
-                TempData["Message"] = "You have no permission to edit this guild!";
-                return RedirectToPage("./NotFound");
-            }
+            Guild = userData.GetManagedGuild(currentUserId);
 
-            if (guildId.HasValue)
-            {
-                Guild = guildData.GetById(guildId.Value);
-                Title = "Edit";
-            }
-            else
+            if(Guild == null && guildId == null)
             {
                 Guild = new Guild();
                 Title = "Create";
             }
-            
-            if(Guild == null)
+            else if(Guild?.Id != guildId)
             {
-                TempData["Message"] = "Guild was not found";
+                TempData["Message"] = "You have no permission to edit this guild!";
                 return RedirectToPage("./NotFound");
+            }
+            else
+            {
+                Title = "Edit";
             }
 
             return Page();
@@ -62,11 +55,6 @@ namespace MyForum.Pages.Guilds
 
         public IActionResult OnPost()
         {
-            if (!CheckPermissionsToEdit(Guild?.Id))
-            {
-                TempData["Message"] = "You have no permission to edit this guild!";
-                return RedirectToPage("./NotFound");
-            }
 
             if (!ModelState.IsValid)
             {
@@ -75,40 +63,19 @@ namespace MyForum.Pages.Guilds
 
             if(Guild.Id > 0)
             {
-                Guild = guildData.Update(Guild);
+                guildData.Update(Guild);
             }
             else
             {
-                Guild = guildData.Add(Guild);
-                guildData.Commit();
+                guildData.Add(Guild);
 
-                if (User.FindFirst("Rank").Value == "Guildmaster")
-                {
-                    var guildmasterId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                    guildData.AssignGuildmaster(Guild.Id, guildmasterId);
-                    guildData.AddMember(Guild.Id, guildmasterId);
-                }
+                var guildmasterId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                guildData.AssignGuildmaster(Guild.Id, guildmasterId);
+                guildData.AddMember(Guild.Id, guildmasterId);
             }
             
-            guildData.Commit();
             TempData["Message"] = "Guild saved";
             return RedirectToPage("./Details", new { guildId = Guild.Id });
-        }
-
-        private bool CheckPermissionsToEdit(int? guildId)
-        {
-            if(httpContextAccessor.HttpContext
-                .User.FindFirst("Rank").Value == "Leader")          //Leader can edit any Guild
-            {
-                return true;
-            }
-
-            if(ManagedGuildId == (guildId == 0 ? null : guildId))   //Guildmaster can edit only his own Guild (ManagedGuildId == Guild.Id)
-            {                                                       //or create new one if has none (ManagedGuildId == null && Guild.Id == null)
-                return true;
-            }
-
-            return false;
         }
     }
 }

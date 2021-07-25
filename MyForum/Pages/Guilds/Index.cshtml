@@ -37,7 +37,7 @@
     <br />Number of guilds: @Model.GuildsCount
 </p>
 
-@if (isLeaderAuthorizationResult.Succeeded || (isGuildmasterAuthorizationResult.Succeeded && Model.ManagedGuildId == null))
+@if (isGuildmasterAuthorizationResult.Succeeded && Model.ManagedGuildId == null)
 {
     <a asp-page=".\Edit" class="btn btn-primary mt-2 mb-4">Add new</a>
 }
@@ -75,12 +75,6 @@
                     @if (isLeaderAuthorizationResult.Succeeded)
                     {
                         <text>
-                            |
-                            <a class="text-primary navbar-text"
-                               asp-page="./Edit"
-                               asp-route-guildId="@guild.Id">
-                                Edit
-                            </a>
                             |
                             <a class="text-primary navbar-text"
                                asp-page="./Delete"

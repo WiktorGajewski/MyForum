@@ -27,8 +27,8 @@ namespace MyForum.Data
                     .HasForeignKey(m => m.FromUserId)
                     .OnDelete(DeleteBehavior.SetNull);
 
-                entity.HasOne(m => m.GuildForum)
-                    .WithMany(m => m.ForumChatMessages)
+                entity.HasOne(m => m.Guild)
+                    .WithMany(m => m.ChatMessages)
                     .HasForeignKey(m => m.GuildId)
                     .OnDelete(DeleteBehavior.SetNull);
             });
@@ -52,8 +52,7 @@ namespace MyForum.Data
             {
                 entity.HasOne(u => u.Guildmaster)
                     .WithOne(u => u.ManagedGuild)
-                    .HasForeignKey<MyUser>(g => g.ManagedGuildId)
-                    .OnDelete(DeleteBehavior.SetNull);
+                    .HasForeignKey<Guild>(g => g.GuildmasterId);
             });
 
             modelBuilder.Entity<MyUser>(entity =>

@@ -7,21 +7,21 @@ namespace MyForum.Pages.Guilds
 {
     public class DetailsModel : PageModel
     {
-        private readonly IGuildData guildData;
+        private readonly IGuildRepostiory guildData;
 
         [TempData]
         public string Message { get; set; }
 
         public Guild Guild { get; set; }
 
-        public DetailsModel(IGuildData guildData)
+        public DetailsModel(IGuildRepostiory guildData)
         {
             this.guildData = guildData;
         }
 
         public IActionResult OnGet(int guildId)
         {
-            Guild = guildData.GetByIdWithMembers(guildId);
+            Guild = guildData.GetByIdWithMembersData(guildId);
 
             if(Guild == null)
             {

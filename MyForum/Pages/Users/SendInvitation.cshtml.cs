@@ -12,18 +12,18 @@ namespace MyForum.Pages.Users
     [Authorize(Policy = "IsGuildmaster")]
     public class SendInvitationModel : PageModel
     {
-        private readonly IInvitationData invitationData;
-        private readonly IUserData userData;
-        private readonly IGuildData guildData;
+        private readonly IInvitationRepository invitationData;
+        private readonly IUserRepository userData;
+        private readonly IGuildRepostiory guildData;
         private readonly string currentUserId;
-        private readonly int? managedGuildId;
+        private readonly Guild managedGuild;
 
         [BindProperty]
         public Invitation NewInvitation { get; set; }
 
         public string UserName { get; set; }
 
-        public SendInvitationModel(IInvitationData invitationData, IUserData userData, IGuildData guildData,
+        public SendInvitationModel(IInvitationRepository invitationData, IUserRepository userData, IGuildRepostiory guildData,
             IHttpContextAccessor httpContextAccessor)
         {
             this.invitationData = invitationData;
@@ -31,12 +31,12 @@ namespace MyForum.Pages.Users
             this.guildData = guildData;
             currentUserId = httpContextAccessor
                 .HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            managedGuildId = userData.GetManagedGuildId(currentUserId);
+            managedGuild = userData.GetManagedGuild(currentUserId);
         }
 
         public IActionResult OnGet(string userId)
         {
-            var user = userData.GetByIdWithGuilds(userId);
+            var user = userData.GetByIdWithMembershipData(userId);
             
             if (user == null)
             {
@@ -44,33 +44,29 @@ namespace MyForum.Pages.Users
                 return RedirectToPage("./NotFound");
             }
 
-            if(managedGuildId == null)
+            if(managedGuild == null)
             {
                 TempData["Message"] = "You have no guild to invite to";
                 return RedirectToPage("./NotFound");
             }
 
-            var guild = guildData.GetById(managedGuildId.Value);
-
-            if (user.GuildsMembership.Contains(guild))
+            if (user.GuildsMembership.Contains(managedGuild))
             {
                 TempData["Message"] = "User is already a member of your guild";
                 return RedirectToPage("./NotFound");
             }
 
-            if (invitationData.Find(user.Id, managedGuildId.Value) != null)
+            if (invitationData.Get(user.Id, managedGuild.Id) != null)
             {
                 TempData["Message"] = "User has already been invited to your guild";
                 return RedirectToPage("./NotFound");
             }
 
-            
-
             NewInvitation = new Invitation
             {
-                GuildId = managedGuildId.Value,
+                GuildId = managedGuild.Id,
                 UserId = user.Id,
-                Message = $"You have been invited to the guild {guild.Name}"
+                Message = $"You have been invited to the guild {managedGuild.Name}"
             };
 
             UserName = user.UserName;
@@ -86,7 +82,6 @@ namespace MyForum.Pages.Users
             }
 
             invitationData.Add(NewInvitation);
-            invitationData.Commit();
 
             TempData["Message"] = "Invitation sent";
             return RedirectToPage("./Index");

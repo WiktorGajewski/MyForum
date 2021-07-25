@@ -11,7 +11,7 @@ namespace MyForum.Pages.Guilds
 {
     public class IndexModel : PageModel
     {
-        private readonly IGuildData guildData;
+        private readonly IGuildRepostiory guildData;
         private readonly int batchSize = 4;
 
         [TempData]
@@ -30,12 +30,12 @@ namespace MyForum.Pages.Guilds
 
         public int BatchSize => batchSize;
 
-        public IndexModel(IGuildData guildData, IHttpContextAccessor httpContextAccessor, IUserData userData)
+        public IndexModel(IGuildRepostiory guildData, IHttpContextAccessor httpContextAccessor, IUserRepository userData)
         {
             this.guildData = guildData;
             var currentUserId = httpContextAccessor
                 .HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            ManagedGuildId = userData.GetManagedGuildId(currentUserId);
+            ManagedGuildId = userData.GetManagedGuild(currentUserId)?.Id;
         }
 
         public void OnGet(int PageNumber)
