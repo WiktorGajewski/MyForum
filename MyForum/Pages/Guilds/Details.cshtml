@@ -29,12 +29,21 @@
             {
                 <tr>
                     <td class="text-success">@member.UserName - Guildmaster</td>
+                    <td></td>
                 </tr>
             }
             else
             {
                 <tr>
                     <td>@member.UserName</td>
+                    <td>
+                        @if (Model.currentUserId == Model.Guild.GuildmasterId)
+                        {
+                            <form method="post">
+                                <button type="submit" asp-route-memberId="@(member.Id)" class="btn btn-outline-danger">Remove from the guild</button>
+                            </form>
+                        }
+                    </td>
                 </tr>
             }
         }
