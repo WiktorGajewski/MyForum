@@ -14,13 +14,15 @@ namespace MyForum.Pages.Users
     [Authorize(Policy = "IsLeader")]
     public class DeleteModel : PageModel
     {
-        private readonly IUserData userData;
+        private readonly IUserRepository userData;
+        private readonly IGuildRepostiory guildData;
 
         public MyUser MyUser { get; set; }
 
-        public DeleteModel(IUserData userData)
+        public DeleteModel(IUserRepository userData, IGuildRepostiory guildData)
         {
             this.userData = userData;
+            this.guildData = guildData;
         }
 
         public IActionResult OnGet(string userId)
@@ -29,6 +31,7 @@ namespace MyForum.Pages.Users
 
             if(MyUser == null)
             {
+                TempData["Message"] = "User was not found";
                 return RedirectToPage("./NotFound");
             }
 
@@ -37,15 +40,16 @@ namespace MyForum.Pages.Users
 
         public IActionResult OnPost(string userId)
         {
-            var user = userData.Delete(userId);
-            userData.Commit();
+            MyUser = userData.GetById(userId);
 
-            if(user == null)
+            if(MyUser?.ManagedGuildId != null)
             {
-                return RedirectToPage("./NotFound");
+                guildData.RemoveGuildmaster(MyUser.ManagedGuildId.Value, MyUser?.Id);
             }
+            
+            userData.Delete(userId);
 
-            TempData["Message"] = $"{user.UserName} deleted";
+            TempData["Message"] = $"User deleted";
             return RedirectToPage("./Index");
         }
     }

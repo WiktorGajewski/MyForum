@@ -13,7 +13,7 @@ namespace MyForum.Pages.Users
     [Authorize(Policy = "IsLeader")]
     public class ManageRankModel : PageModel
     {
-        private readonly IUserData userData;
+        private readonly IUserRepository userData;
 
         [BindProperty]
         public MyUser MyUser { get; set; }
@@ -24,7 +24,7 @@ namespace MyForum.Pages.Users
         public int MinPossibleRank { get; set; }
         public int UserRank { get; set; }
 
-        public ManageRankModel(IUserData userData)
+        public ManageRankModel(IUserRepository userData)
         {
             this.userData = userData;
             MaxPossibleRank = (int)Enum.GetValues(typeof(Rank)).Cast<Rank>().Max();
@@ -37,6 +37,7 @@ namespace MyForum.Pages.Users
 
             if(MyUser == null)
             {
+                TempData["Message"] = "User was not found";
                 return RedirectToPage("./NotFound");
             }
 
@@ -60,8 +61,7 @@ namespace MyForum.Pages.Users
 
             UserRank++;
             var newRank = (Rank)UserRank;
-            userData.SetUpNewRank(MyUser.Id, newRank);
-            userData.Commit();
+            userData.ChangeRank(MyUser.Id, newRank);
 
             TempData["Message"] = $"{MyUser.UserName} rank has been raised";
             return RedirectToPage("./Index");
@@ -79,8 +79,7 @@ namespace MyForum.Pages.Users
 
             UserRank--;
             var newRank = (Rank)UserRank;
-            userData.SetUpNewRank(MyUser.Id, newRank);
-            userData.Commit();
+            userData.ChangeRank(MyUser.Id, newRank);
 
             TempData["Message"] = $"{MyUser.UserName} rank has been lowered";
             return RedirectToPage("./Index");

@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MyForum.Core;
@@ -8,7 +10,7 @@ namespace MyForum.Pages.Users
 {
     public class IndexModel : PageModel
     {
-        private readonly IUserData userData;
+        private readonly IUserRepository userData;
 
         private readonly int batchSize = 4;
 
@@ -24,17 +26,22 @@ namespace MyForum.Pages.Users
         [BindProperty(SupportsGet = true)]
         public string SearchTerm { get; set; }
 
+        public int? ManagedGuildId { get; set; }
+
         public int BatchSize => batchSize;
 
-        public IndexModel(IUserData userData)
+        public IndexModel(IUserRepository userData, IHttpContextAccessor httpContextAccessor)
         {
             this.userData = userData;
+            var currentUserId = httpContextAccessor
+                .HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            ManagedGuildId = userData.GetManagedGuild(currentUserId)?.Id;
         }
 
         public void OnGet(int PageNumber)
         {
             this.PageNumber = PageNumber;
-            MyUsers = userData.GetByUsername(SearchTerm, batchSize, batchSize*PageNumber);
+            MyUsers = userData.GetByUserName(SearchTerm, batchSize, batchSize*PageNumber);
             UsersCount = userData.CountUsers(SearchTerm);
         }
     }

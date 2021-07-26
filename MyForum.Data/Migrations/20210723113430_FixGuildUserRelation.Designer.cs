@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyForum.Data;
 
 namespace MyForum.Data.Migrations
 {
     [DbContext(typeof(MyForumDbContext))]
-    partial class MyForumDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210723113430_FixGuildUserRelation")]
+    partial class FixGuildUserRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -202,7 +204,7 @@ namespace MyForum.Data.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("GuildmasterId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -210,13 +212,6 @@ namespace MyForum.Data.Migrations
                         .HasColumnType("nvarchar(80)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("GuildmasterId")
-                        .IsUnique()
-                        .HasFilter("[GuildmasterId] IS NOT NULL");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
 
                     b.ToTable("Guilds");
                 });
@@ -230,7 +225,6 @@ namespace MyForum.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Message")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("GuildId", "UserId");
@@ -305,6 +299,10 @@ namespace MyForum.Data.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ManagedGuildId")
+                        .IsUnique()
+                        .HasFilter("[ManagedGuildId] IS NOT NULL");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -390,23 +388,14 @@ namespace MyForum.Data.Migrations
                         .HasForeignKey("FromUserId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("MyForum.Core.Guild", "Guild")
-                        .WithMany("ChatMessages")
+                    b.HasOne("MyForum.Core.Guild", "GuildForum")
+                        .WithMany("ForumChatMessages")
                         .HasForeignKey("GuildId")
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("FromUser");
 
-                    b.Navigation("Guild");
-                });
-
-            modelBuilder.Entity("MyForum.Core.Guild", b =>
-                {
-                    b.HasOne("MyForum.Core.MyUser", "Guildmaster")
-                        .WithOne("ManagedGuild")
-                        .HasForeignKey("MyForum.Core.Guild", "GuildmasterId");
-
-                    b.Navigation("Guildmaster");
+                    b.Navigation("GuildForum");
                 });
 
             modelBuilder.Entity("MyForum.Core.Invitation", b =>
@@ -428,9 +417,21 @@ namespace MyForum.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("MyForum.Core.MyUser", b =>
+                {
+                    b.HasOne("MyForum.Core.Guild", "ManagedGuild")
+                        .WithOne("Guildmaster")
+                        .HasForeignKey("MyForum.Core.MyUser", "ManagedGuildId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("ManagedGuild");
+                });
+
             modelBuilder.Entity("MyForum.Core.Guild", b =>
                 {
-                    b.Navigation("ChatMessages");
+                    b.Navigation("ForumChatMessages");
+
+                    b.Navigation("Guildmaster");
 
                     b.Navigation("Invitations");
                 });
@@ -440,8 +441,6 @@ namespace MyForum.Data.Migrations
                     b.Navigation("ChatMessages");
 
                     b.Navigation("Invitations");
-
-                    b.Navigation("ManagedGuild");
                 });
 #pragma warning restore 612, 618
         }

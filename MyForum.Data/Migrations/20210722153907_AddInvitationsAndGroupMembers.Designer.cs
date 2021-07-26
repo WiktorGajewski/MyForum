@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyForum.Data;
 
 namespace MyForum.Data.Migrations
 {
     [DbContext(typeof(MyForumDbContext))]
-    partial class MyForumDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210722153907_AddInvitationsAndGroupMembers")]
+    partial class AddInvitationsAndGroupMembers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -211,12 +213,7 @@ namespace MyForum.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GuildmasterId")
-                        .IsUnique()
-                        .HasFilter("[GuildmasterId] IS NOT NULL");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
+                    b.HasIndex("GuildmasterId");
 
                     b.ToTable("Guilds");
                 });
@@ -230,7 +227,6 @@ namespace MyForum.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Message")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("GuildId", "UserId");
@@ -305,6 +301,8 @@ namespace MyForum.Data.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ManagedGuildId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -390,21 +388,21 @@ namespace MyForum.Data.Migrations
                         .HasForeignKey("FromUserId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("MyForum.Core.Guild", "Guild")
-                        .WithMany("ChatMessages")
+                    b.HasOne("MyForum.Core.Guild", "GuildForum")
+                        .WithMany("ForumChatMessages")
                         .HasForeignKey("GuildId")
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("FromUser");
 
-                    b.Navigation("Guild");
+                    b.Navigation("GuildForum");
                 });
 
             modelBuilder.Entity("MyForum.Core.Guild", b =>
                 {
                     b.HasOne("MyForum.Core.MyUser", "Guildmaster")
-                        .WithOne("ManagedGuild")
-                        .HasForeignKey("MyForum.Core.Guild", "GuildmasterId");
+                        .WithMany()
+                        .HasForeignKey("GuildmasterId");
 
                     b.Navigation("Guildmaster");
                 });
@@ -428,9 +426,18 @@ namespace MyForum.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("MyForum.Core.MyUser", b =>
+                {
+                    b.HasOne("MyForum.Core.Guild", "ManagedGuild")
+                        .WithMany()
+                        .HasForeignKey("ManagedGuildId");
+
+                    b.Navigation("ManagedGuild");
+                });
+
             modelBuilder.Entity("MyForum.Core.Guild", b =>
                 {
-                    b.Navigation("ChatMessages");
+                    b.Navigation("ForumChatMessages");
 
                     b.Navigation("Invitations");
                 });
@@ -440,8 +447,6 @@ namespace MyForum.Data.Migrations
                     b.Navigation("ChatMessages");
 
                     b.Navigation("Invitations");
-
-                    b.Navigation("ManagedGuild");
                 });
 #pragma warning restore 612, 618
         }

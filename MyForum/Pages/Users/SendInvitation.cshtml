@@ -1,0 +1,26 @@
+﻿@page "{userId}"
+@model MyForum.Pages.Users.SendInvitationModel
+@{
+    ViewData["Title"] = "Sent Invitation";
+}
+
+<h2>@ViewData["Title"] to @Model.UserName</h2>
+
+<form method="post">
+    <input type="hidden" asp-for="NewInvitation.GuildId" />
+    <input type="hidden" asp-for="NewInvitation.UserId" />
+
+    <div class="form-group m-3">
+        <label asp-for="NewInvitation.Message"></label>
+        <textarea asp-for="NewInvitation.Message" class="form-control">
+        </textarea>
+        <span class="text-danger" asp-validation-for="NewInvitation.Message"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Sent</button>
+    <a asp-page="Index" class="btn btn-danger">Abort</a>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}

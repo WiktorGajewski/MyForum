@@ -8,6 +8,7 @@
     ViewData["Title"] = "Guilds";
 
     var isLeaderAuthorizationResult = await AuthorizationService.AuthorizeAsync(User, "IsLeader");
+    var isGuildmasterAuthorizationResult = await AuthorizationService.AuthorizeAsync(User, "IsGuildmaster");
 }
 
 <h1>Guilds</h1>
@@ -32,11 +33,11 @@
 }
 
 <p class="text-info">
-    Showing positions: @(Model.BatchSize * Model.PageNumber + 1) - @(Model.BatchSize * (Model.PageNumber+1))
+    Showing positions: @(Model.BatchSize * Model.PageNumber + 1) - @(Model.BatchSize * (Model.PageNumber + 1))
     <br />Number of guilds: @Model.GuildsCount
 </p>
 
-@if (isLeaderAuthorizationResult.Succeeded)
+@if (isGuildmasterAuthorizationResult.Succeeded && Model.ManagedGuildId == null)
 {
     <a asp-page=".\Edit" class="btn btn-primary mt-2 mb-4">Add new</a>
 }
@@ -45,6 +46,7 @@
     <thead>
         <tr>
             <th>Name</th>
+            <th></th>
             <th></th>
         </tr>
     </thead>
@@ -59,8 +61,7 @@
                        asp-route-guildId="@guild.Id">
                         Details
                     </a>
-
-                    @if (isLeaderAuthorizationResult.Succeeded)
+                    @if (isGuildmasterAuthorizationResult.Succeeded && guild.Id == Model.ManagedGuildId)
                     {
                         <text>
                             |
@@ -77,6 +78,30 @@
                             </a>
                         </text>
                     }
+                    @if (isLeaderAuthorizationResult.Succeeded)
+                    {
+                        <text>
+                            |
+                            <a class="text-primary navbar-text"
+                               asp-page="./ChangeGuildmaster"
+                               asp-route-guildId="@guild.Id">
+                                Change Guildmaster
+                            </a>
+                            |
+                            <a class="text-primary navbar-text"
+                               asp-page="./Delete"
+                               asp-route-guildId="@guild.Id">
+                                Delete
+                            </a>
+                        </text>
+                    }
+                </td>
+                <td>
+                    <a class="text-success navbar-text"
+                       asp-page="../Forums/Index"
+                       asp-route-guildId="@guild.Id">
+                        Enter Forum
+                    </a>
                 </td>
             </tr>
         }

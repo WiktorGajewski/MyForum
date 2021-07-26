@@ -13,7 +13,43 @@
 <h2>@Model.Guild.Name</h2>
 
 <div>
-    Members:
+    <h4>Members</h4>
+
+    <table class="table">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var member in Model.Guild.Members)
+        {
+            @if (member.Id == Model.Guild.GuildmasterId)
+            {
+                <tr>
+                    <td class="text-success">@member.UserName - Guildmaster</td>
+                    <td></td>
+                </tr>
+            }
+            else
+            {
+                <tr>
+                    <td>@member.UserName</td>
+                    <td>
+                        @if (Model.currentUserId == Model.Guild.GuildmasterId)
+                        {
+                            <form method="post">
+                                <button type="submit" asp-route-memberId="@(member.Id)" class="btn btn-outline-danger">Remove from the guild</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+    </table>
+
 </div>
 
 <br />

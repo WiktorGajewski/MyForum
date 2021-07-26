@@ -9,3 +9,25 @@
     <h2>to</h2>
     <h1>MyForum</h1>
 </div>
+
+@if(Model.UserHasNewInvitations)
+{
+    <div class="position-absolute top-50 start-50 translate-middle">
+        <div class="toast" id="mytoastr">
+            <div class="toast-body">
+                You've got new invitations!<br />
+                Check <b>Invitations</b> tab.
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            $('#mytoastr').toast({ delay: 5000 });
+            $('#mytoastr').toast('show');
+        });
+    </script>
+}
