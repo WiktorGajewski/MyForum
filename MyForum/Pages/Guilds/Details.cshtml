@@ -25,9 +25,18 @@
     <tbody>
         @foreach (var member in Model.Guild.Members)
         {
-            <tr>
-                <td>@member.UserName</td>
-            </tr>
+            @if (member.Id == Model.Guild.GuildmasterId)
+            {
+                <tr>
+                    <td class="text-success">@member.UserName - Guildmaster</td>
+                </tr>
+            }
+            else
+            {
+                <tr>
+                    <td>@member.UserName</td>
+                </tr>
+            }
         }
     </tbody>
     </table>

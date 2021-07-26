@@ -50,9 +50,12 @@ namespace MyForum.Data
 
             modelBuilder.Entity<Guild>(entity =>
             {
-                entity.HasOne(u => u.Guildmaster)
-                    .WithOne(u => u.ManagedGuild)
+                entity.HasOne(g => g.Guildmaster)
+                    .WithOne(g => g.ManagedGuild)
                     .HasForeignKey<Guild>(g => g.GuildmasterId);
+
+                entity.HasIndex(g => g.Name)
+                    .IsUnique();
             });
 
             modelBuilder.Entity<MyUser>(entity =>

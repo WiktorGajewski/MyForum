@@ -55,10 +55,15 @@ namespace MyForum.Pages.Guilds
 
         public IActionResult OnPost()
         {
-
             if (!ModelState.IsValid)
             {
                 return Page();
+            }
+
+            if(guildData.CheckNameUnique(Guild.Name))
+            {
+                ModelState.AddModelError("Guild.Name", "Name is already in use");
+                return OnGet(Guild.Id == 0 ? null : Guild.Id);
             }
 
             if(Guild.Id > 0)

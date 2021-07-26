@@ -15,5 +15,6 @@ namespace MyForum.Data.Interfaces
         void AssignGuildmaster(int guildId, string guildmasterId);
         void AddMember(int guildId, string memberId);
         void RemoveMember(int guildId, string memberId);
+        bool CheckNameUnique(string guildNameCheck);
     }
 }

@@ -29,6 +29,12 @@ namespace MyForum.Data.Services
             _context.SaveChanges();
         }
 
+        public bool CheckNameUnique(string guildNameCheck)
+        {
+            return _context.Guilds
+                .Any(g => g.Name == guildNameCheck);
+        }
+
         public void Delete(int id)
         {
             var guild = GetById(id);

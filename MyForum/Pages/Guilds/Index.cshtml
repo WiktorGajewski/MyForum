@@ -70,6 +70,12 @@
                                asp-route-guildId="@guild.Id">
                                 Edit
                             </a>
+                            |
+                            <a class="text-primary navbar-text"
+                               asp-page="./Delete"
+                               asp-route-guildId="@guild.Id">
+                                Delete
+                            </a>
                         </text>
                     }
                     @if (isLeaderAuthorizationResult.Succeeded)
