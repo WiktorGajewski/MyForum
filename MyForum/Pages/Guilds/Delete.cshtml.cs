@@ -52,6 +52,15 @@ namespace MyForum.Pages.Guilds
 
         public IActionResult OnPost(int guildId)
         {
+            Guild = guildData.GetById(guildId);
+
+            if (Guild == null)
+            {
+                TempData["Message"] = "Guild was not found";
+                return RedirectToPage("./NotFound");
+            }
+
+            guildData.RemoveGuildmaster(guildId, Guild.GuildmasterId);
             guildData.Delete(guildId);
 
             TempData["Message"] = $"Guild deleted";

@@ -90,6 +90,21 @@ namespace MyForum.Data.Services
             }
         }
 
+        public void RemoveGuildmaster(int guildId, string guildmasterId)
+        {
+            var guild = GetById(guildId);
+            var user = _userData.GetById(guildmasterId);
+
+            if (guild != null && user != null)
+            {
+                guild.GuildmasterId = null;
+                guild.Guildmaster = null;
+                user.ManagedGuild = null;
+                user.ManagedGuildId = null;
+                _context.SaveChanges();
+            }
+        }
+
         public void AddMember(int guildId, string memberId)
         {
             var guild = GetByIdWithMembersData(guildId);

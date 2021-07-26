@@ -15,12 +15,14 @@ namespace MyForum.Pages.Users
     public class DeleteModel : PageModel
     {
         private readonly IUserRepository userData;
+        private readonly IGuildRepostiory guildData;
 
         public MyUser MyUser { get; set; }
 
-        public DeleteModel(IUserRepository userData)
+        public DeleteModel(IUserRepository userData, IGuildRepostiory guildData)
         {
             this.userData = userData;
+            this.guildData = guildData;
         }
 
         public IActionResult OnGet(string userId)
@@ -38,6 +40,13 @@ namespace MyForum.Pages.Users
 
         public IActionResult OnPost(string userId)
         {
+            MyUser = userData.GetById(userId);
+
+            if(MyUser?.ManagedGuildId != null)
+            {
+                guildData.RemoveGuildmaster(MyUser.ManagedGuildId.Value, MyUser?.Id);
+            }
+            
             userData.Delete(userId);
 
             TempData["Message"] = $"User deleted";

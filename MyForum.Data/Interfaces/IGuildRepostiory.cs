@@ -13,6 +13,7 @@ namespace MyForum.Data.Interfaces
         Guild GetByIdWithMembersData(int id);
         IEnumerable<Guild> GetByName(string nameFilter, int guildsToTake, int guildsToSkip);
         void AssignGuildmaster(int guildId, string guildmasterId);
+        void RemoveGuildmaster(int guildId, string guildmasterId);
         void AddMember(int guildId, string memberId);
         void RemoveMember(int guildId, string memberId);
         bool CheckNameUnique(string guildNameCheck);

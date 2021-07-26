@@ -1,0 +1,24 @@
+﻿@page "{guildId:int}"
+@model MyForum.Pages.Guilds.ChangeGuildmasterModel
+@{
+    ViewData["Title"] = "Change Guildmaster";
+}
+
+<h2>Change guildmaster of @Model.Guild.Name</h2>
+<br />
+
+<form class="form" method="post">
+    <select asp-for="NextGuildmasterId" asp-items="Model.AvailableGuildmasters" class="form-select">
+        @if (Model.CurrentGuildmaster != null)
+        {
+            <option value="@Model.CurrentGuildmaster.Id" selected>@Model.CurrentGuildmaster.UserName</option>
+        }
+        else
+        {
+            <option selected>Choose new Guildmaster</option>
+        }
+    </select>
+    <br />
+    <button type="submit" class="btn btn-danger">Change</button>
+    <a asp-page="Index" class="btn btn-primary">Cancel</a>
+</form>

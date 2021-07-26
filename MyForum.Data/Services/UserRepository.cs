@@ -75,5 +75,12 @@ namespace MyForum.Data.Services
 
             return user?.ManagedGuild;
         }
+
+        public IEnumerable<MyUser> GetGuildmastersWithoutGuild()
+        {
+            return _context.Users
+                .Where(u => u.Rank == Rank.Guildmaster && u.ManagedGuildId == null)
+                .ToList();
+        }
     }
 }

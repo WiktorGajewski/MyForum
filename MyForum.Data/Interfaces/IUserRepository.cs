@@ -12,5 +12,6 @@ namespace MyForum.Data.Interfaces
         IEnumerable<MyUser> GetByUserName(string userNameFilter, int usersToTake, int usersToSkip);
         void ChangeRank(string id, Rank rank);
         Guild GetManagedGuild(string userId);
+        IEnumerable<MyUser> GetGuildmastersWithoutGuild();
     }
 }
