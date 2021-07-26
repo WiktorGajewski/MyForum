@@ -16,8 +16,8 @@ Using Razor Pages.
 - Added MainForum - first forum page and possibility to send Messages
 
 ###To do list
-- assign Guildmasters to Guilds
-- every Guild should have it's own forum
-- Guildmasters should be able to invite users to Guilds
-- Likes
-- Prestige Points system: likes add prestige points
+- [x] assign Guildmasters to Guilds
+- [x] every Guild should have it's own forum
+- [x] Guildmasters should be able to invite users to Guilds
+- [ ] Likes
+- [ ] Prestige Points system: likes add prestige points
