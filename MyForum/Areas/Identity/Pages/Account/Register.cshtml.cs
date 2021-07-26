@@ -75,12 +75,15 @@ namespace MyForum.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
+                Rank defaultRank;
+                Enum.TryParse( _config.GetValue<string>("MySettings:DefaultRank"), out defaultRank);
+
                 var user = new MyUser
                 {
                     UserName = Input.Username,
                     RegistrationDate = DateTime.Today,
                     PrestigePoints = 0,
-                    Rank = Rank.Novice
+                    Rank = defaultRank
                 };
 
                 if(CaptchaOn)
