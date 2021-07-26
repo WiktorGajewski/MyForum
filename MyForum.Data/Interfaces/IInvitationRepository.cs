@@ -9,5 +9,6 @@ namespace MyForum.Data.Interfaces
         void Delete(string userId, int guildId);
         Invitation Get(string userId, int guildId);
         IEnumerable<Invitation> GetByUserId(string userId);
+        bool IsUserHavingAnyInvitation(string userId);
     }
 }

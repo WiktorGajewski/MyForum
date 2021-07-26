@@ -42,5 +42,12 @@ namespace MyForum.Data.Services
                 .Where(i => i.UserId == userId)
                 .ToList();
         }
+
+        public bool IsUserHavingAnyInvitation(string userId)
+        {
+            return _context.Invitations
+                .Where(i => i.UserId == userId)
+                .Any();
+        }
     }
 }
