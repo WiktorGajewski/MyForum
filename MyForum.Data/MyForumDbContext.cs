@@ -9,6 +9,7 @@ namespace MyForum.Data
         public DbSet<Guild> Guilds { get; set; }
         public DbSet<ChatMessage> Messages { get; set; }
         public DbSet<Invitation> Invitations { get; set; }
+        public DbSet<Like> Likes { get; set; }
 
         public MyForumDbContext(DbContextOptions<MyForumDbContext> options)
             :base(options)
@@ -62,6 +63,21 @@ namespace MyForum.Data
             {
                 entity.HasMany(u => u.GuildsMembership)
                     .WithMany(u => u.Members);
+            });
+
+            modelBuilder.Entity<Like>(entity =>
+            {
+                entity.HasOne(l => l.FromUser)
+                    .WithMany(l => l.GivenLikes)
+                    .HasForeignKey(l => l.FromUserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(l => l.Message)
+                    .WithMany(l => l.Likes)
+                    .HasForeignKey(l => l.MessageId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasKey(l => new { l.FromUserId, l.MessageId });
             });
         }
     }

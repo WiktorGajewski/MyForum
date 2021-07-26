@@ -75,7 +75,7 @@ namespace MyForum.Pages.Forums
             return Page();
         }
 
-        public IActionResult OnPost()
+        public IActionResult OnPost(int PageNumber, int? guildId)
         {
 
             if (ModelState.IsValid)
@@ -93,7 +93,25 @@ namespace MyForum.Pages.Forums
                 return RedirectToPage();
             }
 
-            return Page();
+            return OnGet(PageNumber, guildId);
+        }
+
+        public IActionResult OnPostGiveLike(int PageNumber, int? guildId, long messageId)
+        {
+            if(messageData.CheckIfLikeWasGiven(messageId, CurrentUserId))
+            {
+                return OnGet(PageNumber, guildId);
+            }
+
+            var newLike = new Like()
+            {
+                FromUserId = CurrentUserId,
+                MessageId = messageId
+            };
+
+            messageData.AddLike(messageId, newLike);
+
+            return RedirectToPage();
         }
 
         private bool CheckAccess(Guild guild)

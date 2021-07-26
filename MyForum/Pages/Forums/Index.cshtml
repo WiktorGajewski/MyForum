@@ -1,8 +1,8 @@
 ﻿@page "{PageNumber:int=0}/{guildId:int?}"
 @model MyForum.Pages.Forums.IndexModel
-@{
-}
 
+@using MyForum.Data.Interfaces;
+@inject IMessageRepository MessageData
 @{
     ViewData["Title"] = $"{Model.GuildName} Forum";
     var countMessages = Model.Messages.Count();
@@ -47,6 +47,9 @@ else
             </div>
             <div class="card-footer">
                 @message.Time
+                <div class="float-end">
+                    <p class="m-2">Likes:  @message.NumberOfLikes</p>
+                </div>
             </div>
         </div>
     }
@@ -61,6 +64,21 @@ else
             </div>
             <div class="card-footer">
                 @message.Time
+                <form method="post" class="float-end">
+                    <div class="input-group">
+
+                        @if (MessageData.CheckIfLikeWasGiven(message.Id, Model.CurrentUserId))
+                        {
+                            <button asp-page-handler="GiveLike" asp-route-messageId="@(message.Id)" type="submit" class="btn btn-success disabled" disabled="disabled">Add Like</button>
+                            <p class="m-2">Likes:  @message.NumberOfLikes</p>
+                        }
+                        else
+                        {
+                            <button asp-page-handler="GiveLike" asp-route-messageId="@(message.Id)" type="submit" class="btn btn-outline-primary">Add Like</button>
+                            <p class="m-2">Likes:  @message.NumberOfLikes</p>
+                        }
+                    </div>
+                </form>
             </div>
         </div>
     }
@@ -68,7 +86,7 @@ else
 
 <form method="post">
     <div class="input-group">
-        <input type="hidden" asp-for="@Model.GuildId"/>
+        <input type="hidden" asp-for="@Model.GuildId" />
         <textarea asp-for="NewMessageContent" class="form-control" rows="1"></textarea>
         <button type="submit" class="btn btn-outline-primary">Send</button>
     </div>

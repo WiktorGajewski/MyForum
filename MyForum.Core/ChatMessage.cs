@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace MyForum.Core
 {
@@ -16,5 +19,8 @@ namespace MyForum.Core
 
         public int? GuildId { get; set; }
         public virtual Guild Guild { get; set; }
+
+        public IList<Like> Likes { get; set; }
+        public int NumberOfLikes { get; set; }
     }
 }

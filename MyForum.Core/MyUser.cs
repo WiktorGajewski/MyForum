@@ -16,5 +16,6 @@ namespace MyForum.Core
         public IList<ChatMessage> ChatMessages { get; set; }
         public IList<Invitation> Invitations { get; set; }
         public IList<Guild> GuildsMembership { get; set; }
+        public IList<Like> GivenLikes { get; set; }
     }
 }
