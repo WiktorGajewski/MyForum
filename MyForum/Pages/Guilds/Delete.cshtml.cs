@@ -11,18 +11,18 @@ namespace MyForum.Pages.Guilds
     [Authorize(Policy = "IsLeaderOrGuildmaster")]
     public class DeleteModel : PageModel
     {
-        private readonly IGuildRepostiory guildData;
-        private readonly IUserRepository userData;
+        private readonly IGuildRepostiory guildRepository;
+        private readonly IUserRepository userRepository;
 
         public Guild Guild { get; set; }
 
         public string currentUserId { get; set; }
         public string currentUserRank { get; set; }
 
-        public DeleteModel(IGuildRepostiory guildData, IUserRepository userData, IHttpContextAccessor httpContextAccessor)
+        public DeleteModel(IGuildRepostiory guildRepository, IUserRepository userRepository, IHttpContextAccessor httpContextAccessor)
         {
-            this.guildData = guildData;
-            this.userData = userData;
+            this.guildRepository = guildRepository;
+            this.userRepository = userRepository;
             currentUserId = httpContextAccessor
                 .HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             currentUserRank = httpContextAccessor
@@ -31,7 +31,7 @@ namespace MyForum.Pages.Guilds
 
         public IActionResult OnGet(int guildId)
         {
-            Guild = guildData.GetById(guildId);
+            Guild = guildRepository.GetById(guildId);
 
             if(Guild == null)
             {
@@ -39,7 +39,7 @@ namespace MyForum.Pages.Guilds
                 return RedirectToPage("./NotFound");
             }
 
-            var managedGuildId = userData.GetManagedGuild(currentUserId)?.Id;
+            var managedGuildId = userRepository.GetManagedGuild(currentUserId)?.Id;
 
             if (currentUserRank == "Guildmaster" && Guild.Id != managedGuildId)     
             {
@@ -52,7 +52,7 @@ namespace MyForum.Pages.Guilds
 
         public IActionResult OnPost(int guildId)
         {
-            Guild = guildData.GetById(guildId);
+            Guild = guildRepository.GetById(guildId);
 
             if (Guild == null)
             {
@@ -60,8 +60,8 @@ namespace MyForum.Pages.Guilds
                 return RedirectToPage("./NotFound");
             }
 
-            guildData.RemoveGuildmaster(guildId, Guild.GuildmasterId);
-            guildData.Delete(guildId);
+            guildRepository.RemoveGuildmaster(guildId, Guild.GuildmasterId);
+            guildRepository.Delete(guildId);
 
             TempData["Message"] = $"Guild deleted";
             return RedirectToPage("./Index");

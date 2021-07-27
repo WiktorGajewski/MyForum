@@ -3,7 +3,6 @@ using MyForum.Core;
 using MyForum.Data.Interfaces;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
@@ -11,7 +10,7 @@ namespace MyForum.Pages.Guilds
 {
     public class IndexModel : PageModel
     {
-        private readonly IGuildRepostiory guildData;
+        private readonly IGuildRepostiory guildRepository;
         private readonly int batchSize = 4;
 
         [TempData]
@@ -30,19 +29,20 @@ namespace MyForum.Pages.Guilds
 
         public int BatchSize => batchSize;
 
-        public IndexModel(IGuildRepostiory guildData, IHttpContextAccessor httpContextAccessor, IUserRepository userData)
+        public IndexModel(IGuildRepostiory guildRepository, IHttpContextAccessor httpContextAccessor,
+            IUserRepository userRepository)
         {
-            this.guildData = guildData;
+            this.guildRepository = guildRepository;
             var currentUserId = httpContextAccessor
                 .HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            ManagedGuildId = userData.GetManagedGuild(currentUserId)?.Id;
+            ManagedGuildId = userRepository.GetManagedGuild(currentUserId)?.Id;
         }
 
         public void OnGet(int PageNumber)
         {
             this.PageNumber = PageNumber;
-            Guilds = guildData.GetByName(SearchTerm, BatchSize, BatchSize*PageNumber);
-            GuildsCount = guildData.CountGuilds(SearchTerm);
+            Guilds = guildRepository.GetByName(SearchTerm, BatchSize, BatchSize*PageNumber);
+            GuildsCount = guildRepository.CountGuilds(SearchTerm);
         }
     }
 }

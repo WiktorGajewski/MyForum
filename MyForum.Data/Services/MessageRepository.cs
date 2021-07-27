@@ -9,12 +9,12 @@ namespace MyForum.Data.Services
     public class MessageRepository : IMessageRepository
     {
         private readonly MyForumDbContext _context;
-        private readonly IUserRepository userData;
+        private readonly IUserRepository userRepository;
 
-        public MessageRepository(MyForumDbContext context, IUserRepository userData)
+        public MessageRepository(MyForumDbContext context, IUserRepository userRepository)
         {
             this._context = context;
-            this.userData = userData;
+            this.userRepository = userRepository;
         }
 
         public void Add(ChatMessage newMessage)
@@ -67,7 +67,7 @@ namespace MyForum.Data.Services
         public bool CheckIfLikeWasGiven(long messageId, string userId)
         {
             var message = GetById(messageId);
-            var user = userData.GetById(userId);
+            var user = userRepository.GetById(userId);
 
             if (message != null && user != null)
             {

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using MyForum.Data.Interfaces;
-using System.Linq;
 
 namespace MyForum.Pages
 {
@@ -11,14 +10,14 @@ namespace MyForum.Pages
     public class IndexModel : PageModel
     {
         private readonly IHttpContextAccessor httpContextAccessor;
-        private readonly IInvitationRepository invitationData;
+        private readonly IInvitationRepository invitationRepository;
 
         public bool UserHasNewInvitations { get; set; }
 
-        public IndexModel(IHttpContextAccessor httpContextAccessor, IInvitationRepository invitationData)
+        public IndexModel(IHttpContextAccessor httpContextAccessor, IInvitationRepository invitationRepository)
         {
             this.httpContextAccessor = httpContextAccessor;
-            this.invitationData = invitationData;
+            this.invitationRepository = invitationRepository;
         }
 
         public void OnGet()
@@ -26,7 +25,7 @@ namespace MyForum.Pages
             if(User.Identity.IsAuthenticated)
             {
                 var currentUserId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                UserHasNewInvitations = invitationData.IsUserHavingAnyInvitation(currentUserId);
+                UserHasNewInvitations = invitationRepository.IsUserHavingAnyInvitation(currentUserId);
             }
             else
             {

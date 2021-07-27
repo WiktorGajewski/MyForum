@@ -12,8 +12,8 @@ namespace MyForum.Pages.Guilds
     [Authorize(Policy = "IsGuildmaster")]
     public class EditModel : PageModel
     {
-        private readonly IGuildRepostiory guildData;
-        private readonly IUserRepository userData;
+        private readonly IGuildRepostiory guildRepository;
+        private readonly IUserRepository userRepository;
 
         [BindProperty]
         public Guild Guild { get; set; }
@@ -23,17 +23,18 @@ namespace MyForum.Pages.Guilds
 
         public string currentUserId{ get; set; }
 
-        public EditModel(IGuildRepostiory guildData, IHttpContextAccessor httpContextAccessor, IUserRepository userData)
+        public EditModel(IGuildRepostiory guildRepository, IHttpContextAccessor httpContextAccessor,
+            IUserRepository userRepository)
         {
-            this.guildData = guildData;
-            this.userData = userData;
+            this.guildRepository = guildRepository;
+            this.userRepository = userRepository;
             currentUserId = httpContextAccessor
                 .HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
         }
 
         public IActionResult OnGet(int? guildId)
         {
-            Guild = userData.GetManagedGuild(currentUserId);
+            Guild = userRepository.GetManagedGuild(currentUserId);
 
             if(Guild == null && guildId == null)
             {
@@ -60,7 +61,7 @@ namespace MyForum.Pages.Guilds
                 return Page();
             }
 
-            if(guildData.CheckNameUnique(Guild.Name))
+            if(guildRepository.CheckNameUnique(Guild.Name))
             {
                 ModelState.AddModelError("Guild.Name", "Name is already in use");
                 return OnGet(Guild.Id == 0 ? null : Guild.Id);
@@ -68,15 +69,15 @@ namespace MyForum.Pages.Guilds
 
             if(Guild.Id > 0)
             {
-                guildData.Update(Guild);
+                guildRepository.Update(Guild);
             }
             else
             {
-                guildData.Add(Guild);
+                guildRepository.Add(Guild);
 
                 var guildmasterId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                guildData.AssignGuildmaster(Guild.Id, guildmasterId);
-                guildData.AddMember(Guild.Id, guildmasterId);
+                guildRepository.AssignGuildmaster(Guild.Id, guildmasterId);
+                guildRepository.AddMember(Guild.Id, guildmasterId);
             }
             
             TempData["Message"] = "Guild saved";

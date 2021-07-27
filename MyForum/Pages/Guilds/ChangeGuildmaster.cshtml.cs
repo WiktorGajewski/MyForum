@@ -12,8 +12,8 @@ namespace MyForum.Pages.Guilds
     [Authorize(Policy = "IsLeader")]
     public class ChangeGuildmasterModel : PageModel
     {
-        private readonly IGuildRepostiory guildData;
-        private readonly IUserRepository userData;
+        private readonly IGuildRepostiory guildRepository;
+        private readonly IUserRepository userRepository;
 
         public Guild Guild { get; set; }
 
@@ -24,15 +24,15 @@ namespace MyForum.Pages.Guilds
         [BindProperty]
         public string NextGuildmasterId { get; set; }
 
-        public ChangeGuildmasterModel(IGuildRepostiory guildData, IUserRepository userData)
+        public ChangeGuildmasterModel(IGuildRepostiory guildRepository, IUserRepository userRepository)
         {
-            this.guildData = guildData;
-            this.userData = userData;
+            this.guildRepository = guildRepository;
+            this.userRepository = userRepository;
         }
 
         public IActionResult OnGet(int guildId)
         {
-            Guild = guildData.GetById(guildId);
+            Guild = guildRepository.GetById(guildId);
 
             if(Guild == null)
             {
@@ -40,8 +40,8 @@ namespace MyForum.Pages.Guilds
                 return RedirectToPage("./NotFound");
             }
 
-            CurrentGuildmaster = userData.GetById(Guild?.GuildmasterId);
-            var availableGuildmasters = userData.GetGuildmastersWithoutGuild();
+            CurrentGuildmaster = userRepository.GetById(Guild?.GuildmasterId);
+            var availableGuildmasters = userRepository.GetGuildmastersWithoutGuild();
 
             IEnumerable<SelectListItem> enumerable = availableGuildmasters.Select(x =>
                            new SelectListItem()
@@ -56,7 +56,7 @@ namespace MyForum.Pages.Guilds
 
         public IActionResult OnPost(int guildId)
         {
-            Guild = guildData.GetById(guildId);
+            Guild = guildRepository.GetById(guildId);
             
             if(Guild == null)
             {
@@ -64,9 +64,9 @@ namespace MyForum.Pages.Guilds
                 return RedirectToPage("./NotFound");
             }
 
-            guildData.RemoveGuildmaster(guildId, Guild.GuildmasterId);
-            guildData.AssignGuildmaster(guildId, NextGuildmasterId);
-            guildData.AddMember(guildId, NextGuildmasterId);
+            guildRepository.RemoveGuildmaster(guildId, Guild.GuildmasterId);
+            guildRepository.AssignGuildmaster(guildId, NextGuildmasterId);
+            guildRepository.AddMember(guildId, NextGuildmasterId);
 
             TempData["Message"] = "Guildmaster changed";
             return RedirectToPage("./Index");

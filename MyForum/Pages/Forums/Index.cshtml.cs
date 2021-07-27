@@ -12,9 +12,9 @@ namespace MyForum.Pages.Forums
 {
     public class IndexModel : PageModel
     {
-        private readonly IMessageRepository messageData;
-        private readonly IGuildRepostiory guildData;
-        private readonly IUserRepository userData;
+        private readonly IMessageRepository messageRepository;
+        private readonly IGuildRepostiory guildRepository;
+        private readonly IUserRepository userRepository;
         private readonly int batchSize = 10;
 
         public IEnumerable<ChatMessage> Messages { get; set; }
@@ -34,12 +34,12 @@ namespace MyForum.Pages.Forums
 
         public int BatchSize => batchSize;
 
-        public IndexModel(IMessageRepository messageData, IGuildRepostiory guildData, IUserRepository userData,
-            IHttpContextAccessor httpContextAccessor)
+        public IndexModel(IMessageRepository messageRepository, IGuildRepostiory guildRepository, 
+            IUserRepository userRepository, IHttpContextAccessor httpContextAccessor)
         {
-            this.messageData = messageData;
-            this.guildData = guildData;
-            this.userData = userData;
+            this.messageRepository = messageRepository;
+            this.guildRepository = guildRepository;
+            this.userRepository = userRepository;
             CurrentUserId = httpContextAccessor
                 .HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
         }
@@ -47,7 +47,7 @@ namespace MyForum.Pages.Forums
         public IActionResult OnGet(int PageNumber, int? guildId)
         {
             this.PageNumber = PageNumber;
-            Messages = messageData.GetByGuildId(guildId, batchSize, batchSize * PageNumber);
+            Messages = messageRepository.GetByGuildId(guildId, batchSize, batchSize * PageNumber);
             GuildId = guildId;
 
             if (guildId == null)
@@ -56,7 +56,7 @@ namespace MyForum.Pages.Forums
                 return Page();
             }
 
-            var guild = guildData.GetById(guildId.Value);
+            var guild = guildRepository.GetById(guildId.Value);
 
             if (guild == null)
             {
@@ -88,7 +88,7 @@ namespace MyForum.Pages.Forums
                     Message = NewMessageContent,
                 };
 
-                messageData.Add(newMessage);
+                messageRepository.Add(newMessage);
 
                 return RedirectToPage();
             }
@@ -98,7 +98,7 @@ namespace MyForum.Pages.Forums
 
         public IActionResult OnPostGiveLike(int PageNumber, int? guildId, long messageId)
         {
-            if(messageData.CheckIfLikeWasGiven(messageId, CurrentUserId))
+            if(messageRepository.CheckIfLikeWasGiven(messageId, CurrentUserId))
             {
                 return OnGet(PageNumber, guildId);
             }
@@ -109,7 +109,7 @@ namespace MyForum.Pages.Forums
                 MessageId = messageId
             };
 
-            messageData.AddLike(messageId, newLike);
+            messageRepository.AddLike(messageId, newLike);
 
             return RedirectToPage();
         }
@@ -126,7 +126,7 @@ namespace MyForum.Pages.Forums
                 return true;
             }
 
-            var user = userData.GetByIdWithMembershipData(CurrentUserId);
+            var user = userRepository.GetByIdWithMembershipData(CurrentUserId);
 
             if(user.GuildsMembership.Contains(guild))
             {

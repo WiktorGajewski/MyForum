@@ -2,7 +2,7 @@
 @model MyForum.Pages.Forums.IndexModel
 
 @using MyForum.Data.Interfaces;
-@inject IMessageRepository MessageData
+@inject IMessageRepository MessageRepository
 @{
     ViewData["Title"] = $"{Model.GuildName} Forum";
     var countMessages = Model.Messages.Count();
@@ -67,7 +67,7 @@ else
                 <form method="post" class="float-end">
                     <div class="input-group">
 
-                        @if (MessageData.CheckIfLikeWasGiven(message.Id, Model.CurrentUserId))
+                        @if (MessageRepository.CheckIfLikeWasGiven(message.Id, Model.CurrentUserId))
                         {
                             <button asp-page-handler="GiveLike" asp-route-messageId="@(message.Id)" type="submit" class="btn btn-success disabled" disabled="disabled">Add Like</button>
                             <p class="m-2">Likes:  @message.NumberOfLikes</p>

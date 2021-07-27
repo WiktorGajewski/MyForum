@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -13,7 +11,7 @@ namespace MyForum.Pages.Users
     [Authorize(Policy = "IsLeader")]
     public class ManageRankModel : PageModel
     {
-        private readonly IUserRepository userData;
+        private readonly IUserRepository userRepository;
 
         [BindProperty]
         public MyUser MyUser { get; set; }
@@ -24,16 +22,16 @@ namespace MyForum.Pages.Users
         public int MinPossibleRank { get; set; }
         public int UserRank { get; set; }
 
-        public ManageRankModel(IUserRepository userData)
+        public ManageRankModel(IUserRepository userRepository)
         {
-            this.userData = userData;
+            this.userRepository = userRepository;
             MaxPossibleRank = (int)Enum.GetValues(typeof(Rank)).Cast<Rank>().Max();
             MinPossibleRank = (int)Enum.GetValues(typeof(Rank)).Cast<Rank>().Min();
         }
 
         public IActionResult OnGet(string userId)
         {
-            MyUser = userData.GetById(userId);
+            MyUser = userRepository.GetById(userId);
 
             if(MyUser == null)
             {
@@ -61,7 +59,7 @@ namespace MyForum.Pages.Users
 
             UserRank++;
             var newRank = (Rank)UserRank;
-            userData.ChangeRank(MyUser.Id, newRank);
+            userRepository.ChangeRank(MyUser.Id, newRank);
 
             TempData["Message"] = $"{MyUser.UserName} rank has been raised";
             return RedirectToPage("./Index");
@@ -79,7 +77,7 @@ namespace MyForum.Pages.Users
 
             UserRank--;
             var newRank = (Rank)UserRank;
-            userData.ChangeRank(MyUser.Id, newRank);
+            userRepository.ChangeRank(MyUser.Id, newRank);
 
             TempData["Message"] = $"{MyUser.UserName} rank has been lowered";
             return RedirectToPage("./Index");
