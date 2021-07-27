@@ -12,9 +12,8 @@ namespace MyForum.Pages.Users
     [Authorize(Policy = "IsGuildmaster")]
     public class SendInvitationModel : PageModel
     {
-        private readonly IInvitationRepository invitationData;
-        private readonly IUserRepository userData;
-        private readonly IGuildRepostiory guildData;
+        private readonly IInvitationRepository invitationRepository;
+        private readonly IUserRepository userRepository;
         private readonly string currentUserId;
         private readonly Guild managedGuild;
 
@@ -23,20 +22,19 @@ namespace MyForum.Pages.Users
 
         public string UserName { get; set; }
 
-        public SendInvitationModel(IInvitationRepository invitationData, IUserRepository userData, IGuildRepostiory guildData,
+        public SendInvitationModel(IInvitationRepository invitationRepository, IUserRepository userRepository,
             IHttpContextAccessor httpContextAccessor)
         {
-            this.invitationData = invitationData;
-            this.userData = userData;
-            this.guildData = guildData;
+            this.invitationRepository = invitationRepository;
+            this.userRepository = userRepository;
             currentUserId = httpContextAccessor
                 .HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            managedGuild = userData.GetManagedGuild(currentUserId);
+            managedGuild = userRepository.GetManagedGuild(currentUserId);
         }
 
         public IActionResult OnGet(string userId)
         {
-            var user = userData.GetByIdWithMembershipData(userId);
+            var user = userRepository.GetByIdWithMembershipData(userId);
             
             if (user == null)
             {
@@ -56,7 +54,7 @@ namespace MyForum.Pages.Users
                 return RedirectToPage("./NotFound");
             }
 
-            if (invitationData.Get(user.Id, managedGuild.Id) != null)
+            if (invitationRepository.Get(user.Id, managedGuild.Id) != null)
             {
                 TempData["Message"] = "User has already been invited to your guild";
                 return RedirectToPage("./NotFound");
@@ -81,7 +79,7 @@ namespace MyForum.Pages.Users
                 return Page();
             }
 
-            invitationData.Add(NewInvitation);
+            invitationRepository.Add(NewInvitation);
 
             TempData["Message"] = "Invitation sent";
             return RedirectToPage("./Index");

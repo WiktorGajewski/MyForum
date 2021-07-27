@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MyForum.Core;
@@ -14,20 +9,20 @@ namespace MyForum.Pages.Users
     [Authorize(Policy = "IsLeader")]
     public class DeleteModel : PageModel
     {
-        private readonly IUserRepository userData;
-        private readonly IGuildRepostiory guildData;
+        private readonly IUserRepository userRepository;
+        private readonly IGuildRepostiory guildRepository;
 
         public MyUser MyUser { get; set; }
 
-        public DeleteModel(IUserRepository userData, IGuildRepostiory guildData)
+        public DeleteModel(IUserRepository userRepository, IGuildRepostiory guildRepository)
         {
-            this.userData = userData;
-            this.guildData = guildData;
+            this.userRepository = userRepository;
+            this.guildRepository = guildRepository;
         }
 
         public IActionResult OnGet(string userId)
         {
-            MyUser = userData.GetById(userId);
+            MyUser = userRepository.GetById(userId);
 
             if(MyUser == null)
             {
@@ -40,14 +35,14 @@ namespace MyForum.Pages.Users
 
         public IActionResult OnPost(string userId)
         {
-            MyUser = userData.GetById(userId);
+            MyUser = userRepository.GetById(userId);
 
             if(MyUser?.ManagedGuildId != null)
             {
-                guildData.RemoveGuildmaster(MyUser.ManagedGuildId.Value, MyUser?.Id);
+                guildRepository.RemoveGuildmaster(MyUser.ManagedGuildId.Value, MyUser?.Id);
             }
             
-            userData.Delete(userId);
+            userRepository.Delete(userId);
 
             TempData["Message"] = $"User deleted";
             return RedirectToPage("./Index");

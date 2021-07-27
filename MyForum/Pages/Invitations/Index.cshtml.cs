@@ -10,37 +10,38 @@ namespace MyForum.Pages.Invitations
 {
     public class IndexModel : PageModel
     {
-        private readonly IInvitationRepository invitationData;
-        private readonly IGuildRepostiory guildData;
+        private readonly IInvitationRepository invitationRepository;
+        private readonly IGuildRepostiory guildRepository;
 
         public string CurrentUserId { get; set; }
 
         public IEnumerable<Invitation> Invitations { get; set; }
 
-        public IndexModel(IInvitationRepository invitationData, IGuildRepostiory guildData, IHttpContextAccessor httpContextAccessor)
+        public IndexModel(IInvitationRepository invitationRepository, IGuildRepostiory guildRepository,
+            IHttpContextAccessor httpContextAccessor)
         {
-            this.invitationData = invitationData;
-            this.guildData = guildData;
+            this.invitationRepository = invitationRepository;
+            this.guildRepository = guildRepository;
             CurrentUserId = httpContextAccessor
                 .HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
         }
 
         public void OnGet()
         {
-            Invitations = invitationData.GetByUserId(CurrentUserId);
+            Invitations = invitationRepository.GetByUserId(CurrentUserId);
         }
 
         public IActionResult OnPostAccept(int guildId)
         {
-            guildData.AddMember(guildId, CurrentUserId);
-            invitationData.Delete(CurrentUserId, guildId);
+            guildRepository.AddMember(guildId, CurrentUserId);
+            invitationRepository.Delete(CurrentUserId, guildId);
 
             return RedirectToPage();
         }
 
         public IActionResult OnPostDecline(int guildId)
         {
-            invitationData.Delete(CurrentUserId, guildId);
+            invitationRepository.Delete(CurrentUserId, guildId);
 
             return RedirectToPage();
         }

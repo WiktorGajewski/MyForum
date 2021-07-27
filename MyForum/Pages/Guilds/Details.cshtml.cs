@@ -9,8 +9,7 @@ namespace MyForum.Pages.Guilds
 {
     public class DetailsModel : PageModel
     {
-        private readonly IGuildRepostiory guildData;
-        private readonly IUserRepository userData;
+        private readonly IGuildRepostiory guildRepository;
 
         [TempData]
         public string Message { get; set; }
@@ -19,18 +18,16 @@ namespace MyForum.Pages.Guilds
 
         public string currentUserId { get; set; }
 
-        public DetailsModel(IGuildRepostiory guildData, IUserRepository userData,
-            IHttpContextAccessor httpContextAccessor)
+        public DetailsModel(IGuildRepostiory guildRepository, IHttpContextAccessor httpContextAccessor)
         {
-            this.guildData = guildData;
-            this.userData = userData;
+            this.guildRepository = guildRepository;
             currentUserId = httpContextAccessor
                 .HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
         }
 
         public IActionResult OnGet(int guildId)
         {
-            Guild = guildData.GetByIdWithMembersData(guildId);
+            Guild = guildRepository.GetByIdWithMembersData(guildId);
 
             if(Guild == null)
             {
@@ -43,7 +40,7 @@ namespace MyForum.Pages.Guilds
 
         public IActionResult OnPost(int guildId, string memberId)
         {
-            Guild = guildData.GetByIdWithMembersData(guildId);
+            Guild = guildRepository.GetByIdWithMembersData(guildId);
 
             if (Guild.GuildmasterId != currentUserId)
             {
@@ -51,7 +48,7 @@ namespace MyForum.Pages.Guilds
                 return RedirectToPage("./NotFound");
             }
 
-            guildData.RemoveMember(Guild.Id, memberId);
+            guildRepository.RemoveMember(Guild.Id, memberId);
 
             TempData["Message"] = "Member removed from the Guild";
             return RedirectToPage();

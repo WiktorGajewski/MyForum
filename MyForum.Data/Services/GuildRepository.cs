@@ -9,12 +9,12 @@ namespace MyForum.Data.Services
     public class GuildRepository : IGuildRepostiory
     {
         private readonly MyForumDbContext _context;
-        private readonly IUserRepository _userData;
+        private readonly IUserRepository _userRepository;
 
-        public GuildRepository(MyForumDbContext context, IUserRepository userData)
+        public GuildRepository(MyForumDbContext context, IUserRepository userRepository)
         {
             this._context = context;
-            this._userData = userData;
+            this._userRepository = userRepository;
         }
 
         public void Add(Guild newGuild)
@@ -78,7 +78,7 @@ namespace MyForum.Data.Services
         public void AssignGuildmaster(int guildId, string guildmasterId)
         {
             var guild = GetById(guildId);
-            var user = _userData.GetById(guildmasterId);
+            var user = _userRepository.GetById(guildmasterId);
 
             if (guild != null && user != null)
             {
@@ -93,7 +93,7 @@ namespace MyForum.Data.Services
         public void RemoveGuildmaster(int guildId, string guildmasterId)
         {
             var guild = GetById(guildId);
-            var user = _userData.GetById(guildmasterId);
+            var user = _userRepository.GetById(guildmasterId);
 
             if (guild != null && user != null)
             {
@@ -108,7 +108,7 @@ namespace MyForum.Data.Services
         public void AddMember(int guildId, string memberId)
         {
             var guild = GetByIdWithMembersData(guildId);
-            var user = _userData.GetByIdWithMembershipData(memberId);
+            var user = _userRepository.GetByIdWithMembershipData(memberId);
 
             if(guild != null && user != null)
             {
@@ -121,7 +121,7 @@ namespace MyForum.Data.Services
         public void RemoveMember(int guildId, string memberId)
         {
             var guild = GetByIdWithMembersData(guildId);
-            var user = _userData.GetByIdWithMembershipData(memberId);
+            var user = _userRepository.GetByIdWithMembershipData(memberId);
 
             if (guild != null && user != null)
             {
