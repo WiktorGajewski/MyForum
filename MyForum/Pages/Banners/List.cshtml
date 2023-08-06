@@ -1,0 +1,56 @@
+﻿@page
+@model MyForum.Pages.Banners.ListModel
+@{
+    ViewData["Title"] = "Banners";
+}
+
+<h1>Banners</h1>
+
+<form method="get">
+    <div class="form-group">
+        <div class="input-group">
+            <input type="search" class="form-control"
+                   asp-for="SearchTerm" />
+            <span class="input-group-btn">
+                <button class="btn btn-primary" type="button">
+                    <i>Filter</i>
+                </button>
+            </span>
+        </div>
+    </div>
+</form>
+
+@if (Model.Message != null)
+{
+    <div class="alet alert-info">@Model.Message</div>
+}
+
+<table class="table">
+    @foreach (var banner in Model.Banners)
+    {
+        <tr>
+            <td>@banner.Name</td>
+            <td class="text-justify">
+                <a class="text-primary navbar-te"
+                   asp-page="./Details"
+                   asp-route-bannerId="@banner.Id">
+                    Details
+                </a>
+                |
+                <a class="text-primary navbar-text"
+                   asp-page="./Edit"
+                   asp-route-bannerId="@banner.Id">
+                    Edit
+                </a>
+                |
+                <a class="text-primary navbar-text"
+                   asp-page="./Delete"
+                   asp-route-bannerId="@banner.Id">
+                    Delete
+                </a>
+            </td>
+        </tr>
+    }
+</table>
+
+<a asp-page=".\Edit" class="btn btn-primary">Add new</a>
