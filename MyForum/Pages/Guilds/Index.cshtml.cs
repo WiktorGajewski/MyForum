@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MyForum.Core;
-using MyForum.Data;
+using MyForum.Data.Interfaces;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MyForum.Pages.Guilds
 {
-    public class ListModel : PageModel
+    public class IndexModel : PageModel
     {
         private readonly IGuildData guildData;
 
@@ -18,7 +18,7 @@ namespace MyForum.Pages.Guilds
         [BindProperty(SupportsGet = true)]
         public string SearchTerm { get; set; }
 
-        public ListModel(IGuildData guildData)
+        public IndexModel(IGuildData guildData)
         {
             this.guildData = guildData;
         }

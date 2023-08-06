@@ -1,0 +1,29 @@
+﻿@page "{userId:int?}"
+
+@model MyForum.Pages.Users.EditModel
+@{
+
+}
+
+<h2>@ViewData["Title"] @Model.User.Nickname</h2>
+
+<form method="post">
+    <input type="hidden" asp-for="User.Id" />
+
+    <div class="form-group">
+        <label asp-for="User.Nickname"></label>
+        <input asp-for="User.Nickname" class="form-control" />
+        <span class="text-danger" asp-validation-for="User.Nickname"></span>
+    </div>
+
+    <input type="hidden" asp-for="User.RegistrationDate" />
+
+    <input type="hidden" asp-for="User.PrestigePoints" />
+
+    <button type="submit" class="btn btn-success">Save</button>
+    <a asp-page="Index" class="btn btn-danger">Abort changes</a>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}

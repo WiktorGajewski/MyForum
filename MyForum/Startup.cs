@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MyForum.Data;
+using MyForum.Data.Interfaces;
+using MyForum.Data.Services;
 
 namespace MyForum
 {
@@ -23,10 +24,12 @@ namespace MyForum
         {
             services.AddDbContextPool<MyForumDbContext>(options =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString("MyForumDb"));
+                options.UseSqlServer(Configuration.GetConnectionString("MyForumDb"))
+                       .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
 
             services.AddScoped<IGuildData, GuildData>();
+            services.AddScoped<IUserData, UserData>();
 
             services.AddRazorPages();
             //services.AddControllers();

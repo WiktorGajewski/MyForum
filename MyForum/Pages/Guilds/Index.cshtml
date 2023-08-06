@@ -1,5 +1,5 @@
 ﻿@page
-@model MyForum.Pages.Guilds.ListModel
+@model MyForum.Pages.Guilds.IndexModel
 @{
     ViewData["Title"] = "Guilds";
 }
@@ -12,7 +12,7 @@
             <input type="search" class="form-control"
                    asp-for="SearchTerm" />
             <span class="input-group-btn">
-                <button class="btn btn-primary" type="button">
+                <button class="btn btn-primary" type="submit" >
                     <i>Filter</i>
                 </button>
             </span>

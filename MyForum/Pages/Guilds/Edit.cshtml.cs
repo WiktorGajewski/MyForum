@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MyForum.Core;
-using MyForum.Data;
+using MyForum.Data.Interfaces;
 
 namespace MyForum.Pages.Guilds
 {

@@ -2,8 +2,9 @@
 using MyForum.Core;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using MyForum.Data.Interfaces;
 
-namespace MyForum.Data
+namespace MyForum.Data.Services
 {
     public class GuildData : IGuildData
     {
