@@ -1,0 +1,38 @@
+﻿@page
+@model MyForum.Pages.Banners.IndexModel
+@{
+    ViewData["Title"] = "ClientBanners";
+}
+
+<h2>ClientBanners</h2>
+
+<table class="table" id="banners">
+
+</table>
+
+@section Scripts{
+
+    <environment include="Development">
+        <link href="~/DataTables/datatables.css" rel="stylesheet" />
+        <script src="~/DataTables/datatables.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/dt-1.10.25/datatables.min.css" />
+        <script type="text/javascript" src="https://cdn.datatables.net/v/bs5/dt-1.10.25/datatables.min.js"></script>
+    </environment>
+
+    <script>
+        $(function () {
+            $.ajax("/api/Banners/",
+                { method: "get" })
+                .then(function (response) {
+                    $("#banners").dataTable({
+                        data: response,
+                        columns: [
+                            { "data": "name"}
+                        ]
+                    });
+                });
+        });
+    </script>
+}

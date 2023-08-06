@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using MyForum.Core;
 using System.Linq;
-using System;
 using Microsoft.EntityFrameworkCore;
 
 namespace MyForum.Data
