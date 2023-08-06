@@ -1,0 +1,23 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Profile";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+}
+
+<h4>@ViewData["Title"]</h4>
+<partial name="_StatusMessage" model="Model.StatusMessage" />
+
+Username
+<h5>@Model.MyUser.UserName</h5>
+Registration date
+<h5>@Model.MyUser.RegistrationDate.ToShortDateString()</h5>
+Prestige points:
+<h5>@Model.MyUser.PrestigePoints</h5>
+
+<br />
+<a asp-page="/Index" class="btn btn-outline-secondary"> Return</a>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,12 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using MyForum.Core;
 
 namespace MyForum.Data
 {
-    public class MyForumDbContext : DbContext
+    public class MyForumDbContext : IdentityDbContext<MyUser>
     {
         public DbSet<Guild> Guilds { get; set; }
-        public DbSet<User> Users { get; set; }
 
         public MyForumDbContext(DbContextOptions<MyForumDbContext> options)
             :base(options)
