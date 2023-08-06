@@ -26,10 +26,10 @@ namespace MyForum
                 options.UseSqlServer(Configuration.GetConnectionString("MyForumDb"));
             });
 
-            services.AddScoped<IBannerData, SqlBannerData>();
+            services.AddScoped<IGuildData, GuildData>();
 
             services.AddRazorPages();
-            services.AddControllers();
+            //services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -56,7 +56,7 @@ namespace MyForum
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
-                endpoints.MapControllers();
+                //endpoints.MapControllers();
             });
         }
     }
